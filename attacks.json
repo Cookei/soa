@@ -1,0 +1,32 @@
+[
+    {
+        "Name": "Simple Twack",
+        "Id": 0,
+        "Type": "Weapon",
+        "Description": "You swing your weapon at the enemy",
+        "Cost": 1,
+        "Physical_Ratio": 0.7,
+        "Magical_Ratio": 0.4,
+        "Ethereal": false
+    },
+    {
+        "Name": "Magical Twang",
+        "Id": 1,
+        "Type": "Weapon",
+        "Description": "You twang your weapon against enemy and it oozes out magical energy",
+        "Cost": 1,
+        "Physical_Ratio": 0.2,
+        "Magical_Ratio": 0.9,
+        "Ethereal": false
+    },
+    {
+        "Name": "Ground Slam",
+        "Id": 2,
+        "Type": "Enemy",
+        "Description": "The enemy jumps into the air ferociously and lands on the floor with a thud. Dust and smoke are flung outwards carpeting anything and blinding them",
+        "Cost": 3,
+        "Physical_Ratio": 1.7,
+        "Magical_Ratio": 0,
+        "Ethereal": false
+    }
+]

@@ -1,0 +1,131 @@
+[
+    {
+        "QuestName": "The Entrance",
+        "Id": 0,
+        "Script": [
+            [
+                "Battle",
+                0,
+                1,
+                2
+            ],
+            [
+                "Text",
+                "A group of hooded figures walked up to you. [I see you have defeated that monstrocity. More and more of these corrupted have appeared on the lower levels of the spire lately. I wonder what's up with that. Anyways, pleased to meet you, my name is Loren, you best be wary. Newcomers to the spire don't survive for long.]",
+                [
+                    [
+                        "[Corruption? What do you mean?]",
+                        3
+                    ],
+                    [
+                        "[Who are you? What do you want?]",
+                        4
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "A group of hooded figures make their way slowly towards you and quickly slay the beast that has defeated you. [Pathetic. How is someone like you going to survive the spire. Get up, I don't want your rotting blood to attract more of those beasts.]",
+                [
+                    [
+                        "[Who are you? What do you want from me?]",
+                        5
+                    ],
+                    [
+                        "[What was that beast!? Do you know anything about that? Who am I? Where am I?]",
+                        3
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[They are creatures plagued with corruption. More and more of them have been arriving and I do not know why. They seem to originate from the upper locations of the sprire however I have not made it up there yet. The corruption eats and rots away at the creatures, devouring them. You are currently in the first floor of the spire. The spire is a death zone. Those who are unfit die a miserable death here. If you do not remember anything, it is normal. Even I do not know why I am here, what is outside, if there is one that is.]",
+                [
+                    [
+                        "[What do I do now? How do I... survive?]",
+                        6
+                    ],
+                    [
+                        "[What am I supposed to do then? What is my goal?]",
+                        6
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[Have some respect! We are a group of people just like you, traveling, trying out best to stay alive. You do not want to come in contact with that corruption on the best. God knows what is coming to the lower levels of this spire]",
+                [
+                    [
+                        "[Corruption? Is that, that rotting flesh on that beast?]",
+                        3
+                    ],
+                    [
+                        "[What am I supposed to do now? Are you going to just leave me?]",
+                        6
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[We just saved your life! Have some respect. We are a group of people just like you, traveling, trying out best to stay alive. You do not want to come in contact with that corruption on the best. God knows what is coming to the lower levels of this spire]",
+                [
+                    [
+                        "[Corruption? Is that, that rotting flesh on that beast?]",
+                        3
+                    ],
+                    [
+                        "[What am I supposed to do now? Are you going to just leave me?]",
+                        6
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[You do what everyone else does. You survive. You can also be an ascender. It has been said that those who climb to the top of the spire get untold riches and power, I don't think I know anyone who has... I mainly want to go up there to find out... why I am here. To survive you must get stronger, you must kill and improve yourself. At your current state, I'd be surprised if you survived the first two floors of this spire.]",
+                "End"
+            ]
+        ],
+        "EnemyList": [
+            {
+                "Name": "Corruption Beast",
+                "Id": 0,
+                "Description": "A beast on the lower levels of the spire. It is unknown to how they got this corruption on them. The corruption rots away at it's skin and with every move more and more of it's flesh get torn off. It is a hulking monstrocity, crawling on all fours. A large mouth snarls at everything it sees.",
+                "Level": 1,
+                "Health": [
+                    0,
+                    20
+                ],
+                "Energy": [
+                    0,
+                    5
+                ],
+                "Floor": [
+                    1,
+                    3
+                ],
+                "Armor_Class": [
+                    2,
+                    7
+                ],
+                "Magic_Defense": [
+                    1,
+                    3
+                ],
+                "Weapon": 1,
+                "Speed": [
+                    4,
+                    7
+                ],
+                "Perception": [
+                    8,
+                    15
+                ],
+                "Attacks": [
+                    2
+                ]
+            }
+        ],
+        "EndMessage": "Quest Complete! Use the venture command to continue to progress!"
+    
+    }
+]
