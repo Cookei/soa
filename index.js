@@ -107,12 +107,28 @@ bot.on("message", async (message) => {
         let database = firebase.database().ref("Players/")
         database.once("value").then(function(snapshot) {
             if (snapshot.hasChild(message.author.id)) {
-                database.child(message.author.id).remove()
-                finalMessage = "```\n"
-                finalMessage += "You feel a tug in your soul. Has it finally been the end? Is this... what is left of you? A hollow shell... a faltered will. You close your eyes as you slump to the floor, your consciousness fading. You hear a crude laugh echo in the distance before you slip into darkness. The spire beckons you. The spire laughs at your weakness....\n"
+                finalMessage = "```css\n"
+                finalMessage += "Are you sure you want to delete your account? This action cannot be undone\n"
+                finalMessage += `You have 7 seconds to respond with ${prefix}yes or ${prefix}no\n`
                 finalMessage += "```"
-                finalMessage += "__**Termination Complete**__"
-                message.channel.send(finalMessage)
+                message.reply(finalMessage).then(d_msg => {d_msg.delete(7000); })
+                const filter = m => m.author.id === message.author.id
+                message.channel.awaitMessages(filter, {max: 1, time: 7000}).then(collected => {
+                    if(collected.first().content === `${prefix}yes` || collected.first().content === `${prefix}y`) {
+                        database.child(message.author.id).remove()
+                        finalMessage = "```\n"
+                        finalMessage += "You feel a tug in your soul. Has it finally been the end? Is this... what is left of you? A hollow shell... a faltered will. You close your eyes as you slump to the floor, your consciousness fading. You hear a crude laugh echo in the distance before you slip into darkness. The spire beckons you. The spire laughs at your weakness....\n"
+                        finalMessage += "```"
+                        finalMessage += "__**Termination Complete**__"
+                        message.channel.send(finalMessage)
+                    }
+                    if(collected.first().content === `${prefix}no`|| collected.first().content === `${prefix}n`) {
+                        finalMessage = "```\n"
+                        finalMessage += "You have canceled your termination\n"
+                        finalMessage += "```\n"
+                        message.channel.send(finalMessage)
+                    }
+                })
             }
             else {
                 finalMessage = "```\n"
