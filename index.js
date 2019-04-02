@@ -111,16 +111,18 @@ bot.on("message", async (message) => {
                 finalMessage += "Are you sure you want to delete your account? This action cannot be undone\n"
                 finalMessage += `You have 7 seconds to respond with ${prefix}yes or ${prefix}no\n`
                 finalMessage += "```"
-                message.reply(finalMessage).then(d_msg => {d_msg.delete(7000); })
+                message.reply(finalMessage).then(d_msg => {d_msg.delete(7100); })
                 const filter = m => m.author.id === message.author.id
                 message.channel.awaitMessages(filter, {max: 1, time: 7000}).then(collected => {
                     if(collected.first().content === `${prefix}yes` || collected.first().content === `${prefix}y`) {
-                        database.child(message.author.id).remove()
-                        finalMessage = "```\n"
-                        finalMessage += "You feel a tug in your soul. Has it finally been the end? Is this... what is left of you? A hollow shell... a faltered will. You close your eyes as you slump to the floor, your consciousness fading. You hear a crude laugh echo in the distance before you slip into darkness. The spire beckons you. The spire laughs at your weakness....\n"
-                        finalMessage += "```"
-                        finalMessage += "__**Termination Complete**__"
-                        message.channel.send(finalMessage)
+                        removeAccount(message.author.id, function() {
+                            database.child(message.author.id).remove()
+                            finalMessage = "```\n"
+                            finalMessage += "You feel a tug in your soul. Has it finally been the end? Is this... what is left of you? A hollow shell... a faltered will. You close your eyes as you slump to the floor, your consciousness fading. You hear a crude laugh echo in the distance before you slip into darkness. The spire beckons you. The spire laughs at your weakness....\n"
+                            finalMessage += "```"
+                            finalMessage += "__**Termination Complete**__"
+                            message.channel.send(finalMessage)
+                        })
                     }
                     if(collected.first().content === `${prefix}no`|| collected.first().content === `${prefix}n`) {
                         finalMessage = "```\n"
@@ -139,70 +141,125 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}weapon`) {
-        if (messageArray[1] == "equipped") {
-            let database = firebase.database().ref("Players/" + message.author.id)
-            database.once("value").then(function(snapshot) {
-                let data = snapshot.val()
-                let finalMessage = ""
-                finalMessage = "__**" + data.Weapon.Name + "**__  " + Number(data.Weapon.Id + 1) + "/" + weapons.length + "\n"
-                finalMessage += "```css\n"
-                finalMessage += "Name: " + data.Weapon.Name + "\n"
-                finalMessage += "Description: " + data.Weapon.Description + "\n"
-                finalMessage += "ID: " + Number(data.Weapon.Id+1) + "\n"
-                finalMessage += "[ Attacks: ]\n"
-                finalMessage += "----------------------------------------------\n"
-                let keys = Object.keys(data.Weapon.Attacks)
-                for(var i = 0; i < keys.length; i++) {
-                    j = attacks[i]
-                    finalMessage += "   Name: " + j.Name + "\n"
-                    finalMessage += "   ID: " + Number(j.Id+1) + "\n"
-                    finalMessage += "   Description: " + j.Description + "\n"
-                    finalMessage += "[  Cost: " + j.Cost + " ]\n"
-                    finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
-                    finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
-                    finalMessage += "----------------------------------------------\n"
+        if (messageArray[1]) {
+            if (messageArray[1] == "equipped") {
+                if (checkAccount(message.author.id) == true) {
+                    let database = firebase.database().ref("Players/" + message.author.id)
+                    database.once("value").then(function(snapshot) {
+                        let data = snapshot.val()
+                        let finalMessage = ""
+                        finalMessage = "__**" + data.Weapon.Name + "**__  " + Number(data.Weapon.Id + 1) + "/" + weapons.length + "\n"
+                        finalMessage += "```css\n"
+                        finalMessage += "Name: " + data.Weapon.Name + "\n"
+                        finalMessage += "Description: " + data.Weapon.Description + "\n"
+                        finalMessage += "ID: " + Number(data.Weapon.Id+1) + "\n"
+                        finalMessage += "[ Attacks: ]\n"
+                        finalMessage += "----------------------------------------------\n"
+                        let keys = Object.keys(data.Weapon.Attacks)
+                        for(var i = 0; i < keys.length; i++) {
+                            j = attacks[i]
+                            finalMessage += "   Name: " + j.Name + "\n"
+                            finalMessage += "   ID: " + Number(j.Id+1) + "\n"
+                            finalMessage += "   Description: " + j.Description + "\n"
+                            finalMessage += "[  Cost: " + j.Cost + " ]\n"
+                            finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
+                            finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
+                            finalMessage += "----------------------------------------------\n"
+                        }
+                        finalMessage += "\n"
+                        finalMessage += "Physical: " + data.Weapon.Physical + "\n"
+                        finalMessage += "Magical: " + data.Weapon.Magical + "\n"
+                        finalMessage += "Ethereal: " + data.Weapon.Ethereal + "\n"
+                        finalMessage += "```"
+                        message.channel.send(finalMessage)
+                    })
                 }
-                finalMessage += "\n"
-                finalMessage += "Physical: " + data.Weapon.Physical + "\n"
-                finalMessage += "Magical: " + data.Weapon.Magical + "\n"
-                finalMessage += "Ethereal: " + data.Weapon.Ethereal + "\n"
-                finalMessage += "```"
-                message.channel.send(finalMessage)
-            })
-        }
-        else if (!isNaN(messageArray[1])) {
-            if (messageArray[1] > weapons.length || messageArray[1] < 1) {
-                message.channel.send("`That Weapon Does Not Exist`")
-                return
+                else {
+                    message.channel.send("```\nYou do not exist yet in this tower\n```")
+                }
+                
             }
-            message.channel.send(seeWeapon(messageArray[1]))   
+            else if (!isNaN(messageArray[1])) {
+                if (messageArray[1] > weapons.length || messageArray[1] < 1) {
+                    message.channel.send("`That Weapon Does Not Exist`")
+                    return
+                }
+                message.channel.send(seeWeapon(messageArray[1]))   
+            }
+            else {
+                message.channel.send("`That command does not exist`")
+            }
         }
         else {
-            message.channel.send("`That command does not exist`")
+            finalMessage = "```css\n"
+            finalMessage += "[ Incorrect Command Usage: ]\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Description: ]\n"
+            finalMessage += "   Used to view the stats of any weapon. Using weapon ID will not show any additional stats or modifiers that have been added\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Usage: ]\n"
+            finalMessage += `   ${prefix}weapon: Shows this text\n`
+            finalMessage += `   ${prefix}weapon <ID>: Shows the stats of the given weapon ID\n`
+            finalMessage += `   ${prefix}weapon equipped: Shows the stats of your currently equipped weapon\n`
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "```"
+            message.channel.send(finalMessage)
         }
     }
     else if (cmd == `${prefix}attack`) {
-        if (!isNaN(messageArray[1])) {
-            if (messageArray[1] > attacks.length || messageArray[1] < 1) {
-                message.channel.send("`That Attack Does Not Exist`")
-                return
+        if (messageArray[1]) {
+            if (!isNaN(messageArray[1])) {
+                if (messageArray[1] > attacks.length || messageArray[1] < 1) {
+                    message.channel.send("`That Attack Does Not Exist`")
+                    return
+                }
+                message.channel.send(seeAttack(messageArray[1]))   
             }
-            message.channel.send(seeAttack(messageArray[1]))   
+            else {
+                message.channel.send("`That command does not exist`")
+            }
         }
         else {
-            message.channel.send("`That command does not exist`")
+            finalMessage = "```css\n"
+            finalMessage += "[ Incorrect Command Usage: ]\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Description: ]\n"
+            finalMessage += "   Used to view the stats of any attack\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Usage: ]\n"
+            finalMessage += `   ${prefix}attack: Shows this text\n`
+            finalMessage += `   ${prefix}attack <ID>: Shows the stats of the given attack ID\n`
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "```"
+            message.channel.send(finalMessage)
         }
     }
     else if (cmd == `${prefix}enemy`) {
-        if (!isNaN(messageArray[1])) {
-            if (messageArray[1] > enemies.length || messageArray[1] < 1) {
-                message.channel.send("`That Enemy Does Not Exist`")
-                return
+        if (messageArray[1]) {
+            if (!isNaN(messageArray[1])) {
+                if (messageArray[1] > enemies.length || messageArray[1] < 1) {
+                    message.channel.send("`That Enemy Does Not Exist`")
+                    return
+                }
+                message.channel.send(seeEnemy(messageArray[1]))   
             }
-            message.channel.send(seeEnemy(messageArray[1]))   
+            else {
+                message.channel.send("`That command does not exist`")
+            }
         }
         else {
-            message.channel.send("`That command does not exist`")
+            finalMessage = "```css\n"
+            finalMessage += "[ Incorrect Command Usage: ]\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Description: ]\n"
+            finalMessage += "   Used to view the stats of any enemy\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Usage: ]\n"
+            finalMessage += `   ${prefix}enemy: Shows this text\n`
+            finalMessage += `   ${prefix}enemy <ID>: Shows the stats of the given enemy ID\n`
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "```"
+            message.channel.send(finalMessage)
         }
     }
     else if (cmd == `${prefix}profile`) {
@@ -275,6 +332,7 @@ bot.on("message", async (message) => {
             }
         }
         else {
+            if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
             let database = firebase.database().ref("Players/")
             database.once("value").then(function(snapshot) {
                 if (snapshot.hasChild(message.author.id)) {
@@ -339,6 +397,7 @@ bot.on("message", async (message) => {
         }
     }
     else if (cmd == `${prefix}duel`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
         if (messageArray[1] > enemies.length) {
             message.channel.send("`That Enemy Does Not Exist`")
             return
@@ -371,6 +430,7 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}use`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
         let finalMessage = ""
         let canSend = true;
         if (messageArray[1] == "attack") {
@@ -434,6 +494,7 @@ bot.on("message", async (message) => {
 
     }
     else if (cmd == `${prefix}usedAttacks`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
         let finalMessage = ""
         let database = firebase.database().ref("Players/" + message.author.id)
         database.once('value').then(function(snapshot) {
@@ -463,9 +524,11 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}end` || cmd == `${prefix}endTurn`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
             endPlayerTurn(messageArray, message.channel, message)
     }
     else if (cmd == `${prefix}run`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
         let database = firebase.database().ref("Players/" + message.author.id)
         database.once('value').then(function(snapshot) {
             let val = snapshot.val() 
@@ -506,6 +569,7 @@ bot.on("message", async (message) => {
         message.channel.send(finalMessage)
     }
     else if (cmd == `${prefix}choice`) {
+        if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
         if (messageArray[1]) {
             let database = firebase.database().ref("Players/" + message.author.id)
             database.once('value').then(function(snapshot) {
@@ -541,6 +605,69 @@ bot.on("message", async (message) => {
         }
     }
 })
+
+function checkAccount(PlayerId) {
+    let database = firebase.database().ref("Players/")
+    database.once('value').then(function(snapshot) {
+        if (snapshot.hasChild(PlayerId)) {
+            return true
+        }
+        else {
+            return false
+        }
+    })
+}
+
+function removeAccount(messageAuthor, callback) {
+    let database = firebase.database().ref("Players/" + messageAuthor)
+    database.once('value').then(function(snapshot) {
+        let data = snapshot.val()
+        if (data.InDuel == true && data.InQuest == true) {
+            value = {
+                InDuel: false
+            }
+            database.update(value)
+            for (let i = 0; i < duelObjects.length; i++) {
+                if (duelObjects[i].PlayerId == messageAuthor) {
+                    duelObjects.splice(i, 1)
+                }
+            }
+            value2 = {
+                InQuest: false
+            }
+            database.update(value2)
+            for (let i = 0; i < questObjects.length; i++) {
+                if (questObjects[i].PlayerId == messageAuthor) {
+                    questObjects.splice(i, 1)
+                }
+            }
+            callback()
+        }
+        else if (data.InQuest == true) {
+            value = {
+                InQuest: false
+            }
+            database.update(value)
+            for (let i = 0; i < questObjects.length; i++) {
+                if (questObjects[i].PlayerId == messageAuthor) {
+                    questObjects.splice(i, 1)
+                }
+            }
+        }
+        else if (data.InDuel == true) {
+            value = {
+                InDuel: false
+            }
+            database.update(value)
+            for (let i = 0; i < duelObjects.length; i++) {
+                if (duelObjects[i].PlayerId == messageAuthor) {
+                    duelObjects.splice(i, 1)
+                }
+            }
+            callback()
+        }
+    })
+}
 
 function endPlayerTurn(messageArray, messageChannel, message) {
     if (messageArray[1] == "full") {
