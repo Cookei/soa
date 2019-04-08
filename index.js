@@ -533,7 +533,7 @@ bot.on("message", async (message) => {
                                                 if (duelObjects[i].PlayerId == message.author.id) {
                                                     duelObjects[i].PlayerAttackQueue.push(attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Id)
                                                     duelObjects[i].PlayerEnergy -= attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost
-                                                    message.channel.send("```css\nYou used " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + " for " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost + " amount of energy\nYou have " + duelObjects[i].PlayerEnergy + "/" + value[5][1] + " energy left```")
+                                                    message.channel.send("```css\nYou used " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + " for " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost + " amount of energy\nYou have " + duelObjects[i].PlayerEnergy + "/" + duelObjects.PlayerMaxEnergy + " energy left```")
                                                 }
                                             }
                                             
@@ -669,7 +669,7 @@ bot.on("message", async (message) => {
         finalMessage += "```"
         message.channel.send(finalMessage)
     }
-    else if (cmd == `${prefix}choice`) {
+    else if (cmd == `${prefix}choice` || cmd == `${prefix}Choice`) {
         if (messageArray[1]) {
             checkAccount(message.author.id, function(param) {
                 if (param) {
