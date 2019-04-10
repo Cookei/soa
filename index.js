@@ -10,6 +10,7 @@ const weapons = require('./weapons.json')
 const attacks = require('./attacks.json')
 const enemies = require("./enemies.json")
 const quests = require("./quests.json")
+const materials = require("./materials.json")
 var duelObjects = [
 
 ]
@@ -57,6 +58,7 @@ bot.on("message", async (message) => {
         let database = firebase.database().ref("Players/" + message.author.id)
         database.once("value").then(function(snapshot) {
             if (snapshot.val() == null) {
+                helpCommand(message.author, message.channel)
                 var value = {
                     Health: 100,
                     Health_Cap: 100,
@@ -263,6 +265,34 @@ bot.on("message", async (message) => {
             message.channel.send(finalMessage)
         }
     }
+    else if (cmd == `${prefix}material`) {
+        if (messageArray[1]) {
+            if (!isNaN(messageArray[1])) {
+                if (messageArray[1] > materials.length || messageArray[1] < 1) {
+                    message.channel.send("`That Material Does Not Exist`")
+                    return
+                }
+                message.channel.send(seeMaterial(messageArray[1]))   
+            }
+            else {
+                message.channel.send("`That command does not exist`")
+            }
+        }
+        else {
+            finalMessage = "```css\n"
+            finalMessage += "[ Incorrect Command Usage: ]\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Description: ]\n"
+            finalMessage += "   Used to view the stats of any material\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Usage: ]\n"
+            finalMessage += `   ${prefix}material: Shows this text\n`
+            finalMessage += `   ${prefix}material <ID>: Shows the stats of the given material ID\n`
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "```"
+            message.channel.send(finalMessage)
+        }
+    }
     else if (cmd == `${prefix}profile`) {
         if (messageArray[1]) {
             if (message.mentions.users.first()) {
@@ -417,8 +447,8 @@ bot.on("message", async (message) => {
                         let value = snapshot.val()
                     if (value.InDuel == false) {
                         let finalMessage = ""
-                        let enemy = messageArray[1]-1
-                        if (isNaN(enemy)) {
+                        let enemy = enemies[messageArray[1]-1]
+                        if (isNaN(messageArray[1])) {
                             finalMessage = "`An ERROR has occured. You must put the ID number in the parameter`"
                             message.channel.send(finalMessage)
                             return
@@ -436,6 +466,7 @@ bot.on("message", async (message) => {
                     }
                     else {
                         message.channel.send("`You are already in combat`")
+                        return
                     }
                 })
             }
@@ -533,7 +564,7 @@ bot.on("message", async (message) => {
                                                 if (duelObjects[i].PlayerId == message.author.id) {
                                                     duelObjects[i].PlayerAttackQueue.push(attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Id)
                                                     duelObjects[i].PlayerEnergy -= attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost
-                                                    message.channel.send("```css\nYou used " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + " for " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost + " amount of energy\nYou have " + duelObjects[i].PlayerEnergy + "/" + duelObjects.PlayerMaxEnergy + " energy left```")
+                                                    message.channel.send("```css\nYou used " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + " for " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost + " amount of energy\nYou have " + duelObjects[i].PlayerEnergy + "/" + data.EnergyCap + " energy left```")
                                                 }
                                             }
                                             
@@ -651,23 +682,7 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}help`) {
-        let finalMessage = ""
-        finalMessage = "```css\n"
-        finalMessage += "Available Commands:\n"
-        finalMessage += "   botinfo\n"
-        finalMessage += "   create\n"
-        finalMessage += "   remove\n"
-        finalMessage += "   enemy\n"
-        finalMessage += "   attack\n"
-        finalMessage += "   weapon\n"
-        finalMessage += "   profile\n"
-        finalMessage += "   duel\n"
-        finalMessage += "   use (currently the only parameter is use attack. Error message not yet inplemented)\n"
-        finalMessage += "   usedAttacks\n"
-        finalMessage += "   run\n"
-        finalMessage += "   end\n" 
-        finalMessage += "```"
-        message.channel.send(finalMessage)
+        helpCommand(message.author, message.channel)
     }
     else if (cmd == `${prefix}choice` || cmd == `${prefix}Choice`) {
         if (messageArray[1]) {
@@ -727,6 +742,48 @@ bot.on("message", async (message) => {
         }
     }
 })
+
+function helpCommand(messageAuthor, messageChannel) {
+    let finalMessage = "```css\n"
+        finalMessage += "How to fight enemies: "
+        finalMessage += "You have a set amount of resource. This resource is called [ ENERGY ]. Every attack you make uses up this [ ENERGY ]. Enemies have this mechanic as well\n"
+        finalMessage += "To use an attack, you use the ]use command.\n"
+        finalMessage += "This command has many uses, but the attack parameter is one of them. Upon adding the attack parameter, you need to enter an attack ID as another parameter.\n"
+        finalMessage += "At default, you have 2 attacks, Simple Twack : 1, and Magical Twange : 2, with their attack numbers respectively.\n"
+        finalMessage += "If you view your weapon using ]weapon equipped, you will see all your attacks that you can use. The attack ID number corrosponds to the order/what attacks you have unlocked.\n"
+        finalMessage += "In addition, if you want to bulk use attacks, you can add an additional parameter indicating how much of that attack you want to use.\n"
+        finalMessage += "----------------------------------------------\n"
+        finalMessage += "   Final Command: \n"
+        finalMessage += "   ]use attack 2 3\n"
+        finalMessage += "----------------------------------------------\n"
+        finalMessage += "Using the command ]usedAttacks will list all the attacks you have used this turn\n"
+        finalMessage += "Using the command ]end will end your turn and have the enemy take their turn."
+        finalMessage += "```"
+        messageAuthor.send(finalMessage)
+
+        finalMessage = "```css\n"
+        finalMessage += "Available Commands:\n"
+        finalMessage += "   botinfo\n"
+        finalMessage += "   create\n"
+        finalMessage += "   remove\n"
+        finalMessage += "   enemy\n"
+        finalMessage += "   attack\n"
+        finalMessage += "   weapon\n"
+        finalMessage += "   material\n"
+        finalMessage += "   profile\n"
+        finalMessage += "   duel\n"
+        finalMessage += "   use (currently the only parameter is use attack)\n"
+        finalMessage += "   usedAttacks\n"
+        finalMessage += "   run\n"
+        finalMessage += "   end\n" 
+        finalMessage += "   choice\n"
+        finalMessage += "```"
+        messageAuthor.send(finalMessage)
+        finalMessage = "```\n"
+        finalMessage += "A help message has been sent to your DMs\n"
+        finalMessage += "```"
+        messageChannel.send(finalMessage)
+}
 
 function checkAccount(PlayerId, callback) {
     let database = firebase.database().ref("Players/")
@@ -788,6 +845,9 @@ function removeAccount(messageAuthor, callback) {
             }
             callback()
         }
+        else {
+            callback()
+        }
     })
 }
 
@@ -846,6 +906,10 @@ database.once('value').then(function (snapshot) {
                             for (let o = 0; o < questObjects.length; o++) {
                                 if (questObjects[o].PlayerId == message.author.id) {
                                     initQuest(questObjects[o].QuestId, message.author.id, message.channel, "Fail")
+                                    let update = {
+                                        InDuel: false
+                                    }
+                                    database.update(update)
                                 }
                             }
                         }
@@ -1247,7 +1311,7 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                             messageChannel.send(finalMessage)
                             for (let j = 0; j < selectQuest.Script[questObjects[i].QuestPosition][2].length; j++) {
                                 finalMessage = "```css\n"
-                                finalMessage += "Choice" + (j + 1) + ": " + selectQuest.Script[questObjects[i].QuestPosition][2][j][0]
+                                finalMessage += "Choice " + (j + 1) + ": " + selectQuest.Script[questObjects[i].QuestPosition][2][j][0]
                                 finalMessage += "```"
                                 messageChannel.send(finalMessage)
                             }
@@ -1326,7 +1390,7 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
     let database = firebase.database().ref("Players/" + playerId)
     database.once('value').then(function(snapshot) {
         let turn = 1
-        let targetEnemy = Object.entries(enemy)
+        let targetEnemy = enemy
         let finalMessage = "__**You have started a duel against " + targetEnemy.Name + "**__ Level: " + enemyLevel + "  Turn: " + turn
         value = true
         let value2 = Object.entries(snapshot.val())
@@ -1352,18 +1416,18 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
             PlayerMagicDefense: value3.Magic_Defense,
             PlayerWeapon: value3.Weapon,
             PlayerPreviousHp: value3.Health,
-            EnemyHp: targetEnemy[4][1][1] * (targetEnemy[3][1] * 1.5),
-            EnemyMaxHp: targetEnemy[4][1][1] * (targetEnemy[3][1] * 1.5),
-            EnemyEnergy: targetEnemy[5][1][1],
-            EnemyMaxEnergy: targetEnemy[5][1][1],
+            EnemyHp: targetEnemy.Health[1] * (targetEnemy.Level * 1.5),
+            EnemyMaxHp: targetEnemy.Health[1] * (targetEnemy.Level * 1.5),
+            EnemyEnergy: targetEnemy.Energy,
+            EnemyMaxEnergy: targetEnemy.Energy,
             EnemyAttackQueue: [
     
             ],
-            EnemyArmorClass: Math.round(Math.random() * targetEnemy[7][1][1] + targetEnemy[7][1][0] * (targetEnemy[3][1] * 1.2)),
-            EnemyMagicDefense: Math.round(Math.random() * targetEnemy[8][1][1] + targetEnemy[8][1][0] * (targetEnemy[3][1] * 1.2)),
-            EnemyWeapon: targetEnemy[9][1],
+            EnemyArmorClass: Math.round(Math.random() * targetEnemy.Armor_Class[1] + targetEnemy.Armor_Class[0] * (targetEnemy.Level * 1.2)),
+            EnemyMagicDefense: Math.round(Math.random() * targetEnemy.Magic_Defense[1] + targetEnemy.Magic_Defense[0] * (targetEnemy.Level * 1.2)),
+            EnemyWeapon: targetEnemy.Weapon,
             Turn: "Player",
-            Enemy: targetEnemy[1][1],
+            Enemy: targetEnemy.Id,
             EnemyLevel: enemyLevel
             }
         )
@@ -1503,6 +1567,25 @@ function shuffleArray(array) {
         array[randomIndex] = temporaryValue
     }
     return array
+}
+
+function seeMaterial(id) {
+    let finalMessage = ""
+    if (isNaN(id)) return "`An ERROR has occured. You must put the ID number in the parameter`"
+    finalMessage = "__**" + materials[id-1].Name + "**__  " + Number(materials[id-1].Id+1) + "/" + materials.length + "\n"
+    finalMessage += "```css\n"
+    finalMessage += "----------------------------------------------\n"
+    finalMessage += "   Name: " + materials[id-1].Name + "\n"
+    finalMessage += "   ID: " + Number(materials[id-1].Id+1) + "\n"
+    finalMessage += "   Description: " + materials[id-1].Description + "\n"
+    finalMessage += "   Drop Chance: " + (materials[id-1].Chance * 100) + "%\n"
+    finalMessage += "[      Physical Amp: " + materials[id-1].Physical_Amp + " ]\n"
+    finalMessage += "[      Magical Amp: " + materials[id-1].Magical_Amp + " ]\n"
+    finalMessage += "[      Ethereal Amp: " + materials[id-1].Ethereal_Amp + " ]\n"
+    finalMessage += "   Nodes: " + materials[id-1].Nodes + "\n"
+    finalMessage += "----------------------------------------------\n"
+    finalMessage += "```"
+    return finalMessage
 }
 
 function seeWeapon(id) {

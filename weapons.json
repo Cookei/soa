@@ -9,7 +9,11 @@
         "Attacks": [
             0,
             1
-        ]
+        ],
+        "Statuses": [
+
+        ],
+        "Node_Slots": 2
     },
     {
         "Name": "Battered Tree Trunk",
@@ -20,6 +24,10 @@
         "Ethereal": 0,
         "Attacks": [
             0
-        ]
+        ],
+        "Statuses": [
+
+        ],
+        "Node_Slots": 5
     }
 ]
