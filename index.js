@@ -79,7 +79,10 @@ bot.on("message", async (message) => {
                     Coins: 0,
                     Class: "",
                     Name: message.author.username,
-                    InQuest: false
+                    InQuest: false,
+                    Inventory: [
+                        materials[0]
+                    ]
                 }
                 database.update(value)
                 finalMessage += "__**Account Created**__\n"
@@ -519,7 +522,17 @@ bot.on("message", async (message) => {
                                     if (isNaN(messageArray[3])) {
                                         return message.channel.send("`That is not a valid quantity`")
                                     }
+                                    else if (Math.sign(messageArray[3]) != 1) {
+                                        return message.channel.send("`Please enter a valid number`")
+                                    }
                                     else {
+                                        for (let i = 0;  i < duelObjects.length; i++) {
+                                            if (duelObjects[i].PlayerId == message.author.id) {
+                                                if (attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Cost * messageArray[3] > duelObjects[i].PlayerEnergy) {
+                                                    return message.channel.send("`You do not have the energy to use this many attacks`")
+                                                }
+                                            }
+                                        }
                                         finalMessage = "```css\n"
                                         finalMessage += "Are you sure you want to use " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + " " + messageArray[3] + " times" + "\n"
                                         finalMessage += "```"
@@ -741,6 +754,55 @@ bot.on("message", async (message) => {
             message.channel.send(finalMessage)
         }
     }
+    else if (cmd == `${prefix}inventory` || cmd == `${prefix}inv`) {
+        let database = firebase.database().ref("Players/" + message.author.id + "/" + "Inventory")
+        database.once('value').then(function(snapshot) {
+            let value = snapshot.val()
+            if (value != null) {
+                let invLength = value.length
+                console.log(value.length)
+                let finalMessage = "__**Inventory** " + invLength + " items recorded__\n"
+                message.channel.send(finalMessage)
+                let invMessage = ""
+                let invMessages = [
+    
+                ]
+                for (let i = 0; i < value.length; i++) {
+                    if (invMessage.length >= 1900) {
+                        invMessages.push(invMessage)
+                        invMessage = ""
+                    }
+                    else {
+                        if (value[i].Type == "Material") {
+                            invMessage += "Slot " + (i + 1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + " -- x" + value[i].Count + "\n"
+                        }
+                        else if (value[i].Type == "Weapon") {
+                            invMessage += "Slot " + (i + 1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + "\n"
+                        }
+                    }
+                    if (i+1 == value.length) {
+                        invMessages.push(invMessage)
+                    }
+                }
+                for (let i = 0; i < invMessages.length; i++) {
+                    finalMessage = "```css\n"
+                    finalMessage += invMessages[i]
+                    finalMessage += "```"
+                    message.channel.send(finalMessage)
+                } 
+            }
+            else {
+                let finalMessage = "__**Inventory** " + 0 + " items recorded__\n"
+                finalMessage += "```\n"
+                finalMessage += "```"
+                message.channel.send(finalMessage)
+            }
+        })
+    }
+    else if (cmd == `${prefix}give`) {
+        invPush(message.author.id, materials[0], 1)
+    }
+
 })
 
 function helpCommand(messageAuthor, messageChannel) {
@@ -783,6 +845,56 @@ function helpCommand(messageAuthor, messageChannel) {
         finalMessage += "A help message has been sent to your DMs\n"
         finalMessage += "```"
         messageChannel.send(finalMessage)
+}
+
+function invPush(playerId, material, quanity) {
+    let database = firebase.database().ref("Players/" + playerId + "/Inventory")
+    database.once('value').then(function(snapshot) {
+        let value = snapshot.val()
+        if (value == null) {
+            if (material.Type == "Material") {
+                let set = [
+                    material
+                ]
+                set[0].Count = quanity
+                database.update(set)
+            }
+            else if (material.Type == "Weapon") {
+                let set = [
+                    material
+                ]
+                database.update(set)
+            }
+        }
+        else {
+            if (material.Type == "Material") {
+                canDo = false
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i].Name == material.Name) {
+                        let database2 = firebase.database().ref("Players/" + playerId + "/Inventory/" + i)
+                        database2.once('value').then(function(snapshot2) {
+                            let value2 = snapshot2.val()
+                            let num = value2.Count
+                            num += quanity
+                            let count = {
+                                Count: num
+                            }
+                            database2.update(count)
+                        })
+                    }
+                    else if (i == value.length-1) {
+                        canDo = true
+                    }
+                }
+                if (canDo == true) {
+                    firebase.database().ref("Players/" + playerId + "/Inventory/" + value.length).set(material)
+                }
+            }
+            else if (material.Type == "Weapon") {
+                firebase.database().ref("Players/" + playerId + "/Inventory/" + value.length).set(material)
+            }
+        }
+    })
 }
 
 function checkAccount(PlayerId, callback) {
@@ -1578,6 +1690,7 @@ function seeMaterial(id) {
     finalMessage += "   Name: " + materials[id-1].Name + "\n"
     finalMessage += "   ID: " + Number(materials[id-1].Id+1) + "\n"
     finalMessage += "   Description: " + materials[id-1].Description + "\n"
+    finalMessage += "   Floor Found: " + materials[id-1].Floor + "\n"
     finalMessage += "   Drop Chance: " + (materials[id-1].Chance * 100) + "%\n"
     finalMessage += "[      Physical Amp: " + materials[id-1].Physical_Amp + " ]\n"
     finalMessage += "[      Magical Amp: " + materials[id-1].Magical_Amp + " ]\n"
@@ -1596,6 +1709,7 @@ function seeWeapon(id) {
     finalMessage += "Name: " + weapons[id-1].Name + "\n"
     finalMessage += "Description: " + weapons[id-1].Description + "\n"
     finalMessage += "ID: " + Number(weapons[id-1].Id+1) + "\n"
+    finalMessage += "Floor Found: " + weapons[id-1].Floor + "\n"
     finalMessage += "[ Attacks: ]\n"
     finalMessage += "----------------------------------------------\n"
     let keys = Object.keys(weapons[id-1].Attacks)
@@ -1644,8 +1758,8 @@ function seeEnemy(id) {
     finalMessage += "Name: " + enemies[id-1].Name + "\n"
     finalMessage += "Description: " + enemies[id-1].Description + "\n"
     finalMessage += "ID: " + Number(enemies[id-1].Id + 1) + "\n"
-    finalMessage += "Health: " + enemies[id-1].Health[0] + "/" + enemies[id-1].Health[1] + "\n"
-    finalMessage += "Energy: " + enemies[id-1].Energy[0] + "/" + enemies[id-1].Energy[1] + "\n"
+    finalMessage += "Health: " + enemies[id-1].Health[1] + "/" + enemies[id-1].Health[1] + "\n"
+    finalMessage += "Energy: " + enemies[id-1].Energy + "/" + enemies[id-1].Energy + "\n"
     finalMessage += "Floors Available: " + enemies[id-1].Floor[0] + " - " + enemies[id-1].Floor[1] + "\n"
     finalMessage += "Armor Class: " + enemies[id-1].Armor_Class[0] + " - " + enemies[id-1].Armor_Class[1] + "\n"
     finalMessage += "Magic Defense: " + enemies[id-1].Magic_Defense[0] + " - " + enemies[id-1].Magic_Defense[1] + "\n"
@@ -1653,24 +1767,23 @@ function seeEnemy(id) {
     finalMessage += "   Name: " + weapons[weaponUsed-1].Name + "\n"
     finalMessage += "   Description: " + weapons[weaponUsed-1].Description + "\n"
     finalMessage += "   ID: " + Number(weapons[weaponUsed-1].Id+1) + "\n"
-    finalMessage += "[  Attacks: ]\n"
-    finalMessage += "----------------------------------------------\n"
-    let keys = Object.keys(weapons[weaponUsed-1].Attacks)
-    for(var i = 0; i < keys.length; i++) {
-        j = attacks[i]
-        finalMessage += "   Name: " + j.Name + "\n"
-        finalMessage += "   ID: " + Number(j.Id+1) + "\n"
-        finalMessage += "   Description: " + j.Description + "\n"
-        finalMessage += "[  Cost: " + j.Cost + " ]\n"
-        finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
-        finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
-        finalMessage += "----------------------------------------------\n"
-    }
+    // finalMessage += "[  Attacks: ]\n"
+    // finalMessage += "----------------------------------------------\n"
+    // let keys = Object.keys(weapons[weaponUsed-1].Attacks)
+    // for(var i = 0; i < keys.length; i++) {
+    //     j = attacks[i]
+    //     finalMessage += "   Name: " + j.Name + "\n"
+    //     finalMessage += "   ID: " + Number(j.Id+1) + "\n"
+    //     finalMessage += "   Description: " + j.Description + "\n"
+    //     finalMessage += "[  Cost: " + j.Cost + " ]\n"
+    //     finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
+    //     finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
+    //     finalMessage += "----------------------------------------------\n"
+    // }
     finalMessage += "\n"
     finalMessage += "   Physical: " + weapons[weaponUsed-1].Physical + "\n"
     finalMessage += "   Magical: " + weapons[weaponUsed-1].Magical + "\n"
     finalMessage += "   Ethereal: " + weapons[weaponUsed-1].Ethereal + "\n"
-    finalMessage += "----------------------------------------------\n"
     finalMessage += "----------------------------------------------\n"
     finalMessage += "Enemy Attacks:\n"
     let keys2 = Object.values(enemies[id-1].Attacks)

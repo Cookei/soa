@@ -2,6 +2,8 @@
     {
         "Name": "Slighty Magical Crowbar",
         "Id": 0,
+        "Floor": 1,
+        "Type": "Weapon",
         "Description": "Honestly not too sure about this. Seems like someone just slighty enchanted a metal crowbar they found on the floor. You should probably keep it. It loves you.",
         "Physical": 10,
         "Magical": 10,
@@ -18,6 +20,8 @@
     {
         "Name": "Battered Tree Trunk",
         "Id": 1,
+        "Floor": 1,
+        "Type": "Weapon",
         "Description": "A tree ripped from the Sylven plains. It has seen much use, perhaps banging against other foes. Termites bite and gnaw at the tree trunk making it quite fragile.",
         "Physical": 12,
         "Magical": 3,
