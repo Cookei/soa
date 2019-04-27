@@ -95,10 +95,7 @@
                     0,
                     20
                 ],
-                "Energy": [
-                    0,
-                    5
-                ],
+                "Energy": 5,
                 "Floor": [
                     1,
                     3
@@ -122,6 +119,24 @@
                 ],
                 "Attacks": [
                     2
+                ],
+                "Drop_Table": [
+                    {
+                        "Name": "Corrupted Flesh",
+                        "Id": 0,
+                        "Floor": 1,
+                        "Count": 1,
+                        "Type": "Material",
+                        "Description": "A piece of corrupted flesh that has dropped from the corrupted. It has little use. Dark purple tendrils scorch the skin, wrapping around it like snakes devouring its prey",
+                        "Chance": 1,
+                        "Physical_Amp": 0,
+                        "Magical_Amp": 3,
+                        "Ethereal_Amp": 2,
+                        "Nodes": 1,
+                        "Status": [
+                
+                        ]
+                    }
                 ]
             }
         ],

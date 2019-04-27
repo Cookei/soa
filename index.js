@@ -11,12 +11,15 @@ const attacks = require('./attacks.json')
 const enemies = require("./enemies.json")
 const quests = require("./quests.json")
 const materials = require("./materials.json")
+const floors = require("./floors.json")
 var duelObjects = [
 
 ]
 var questObjects = [
 
 ]
+
+var botVersion = 0.1
 
 var config = {
     apiKey: "AIzaSyBIkqcsvFQJjvHVzwA-y9_WlImEgPw9ftE",
@@ -41,6 +44,14 @@ bot.on("message", async (message) => {
     let cmd = messageArray[0]
     let finalMessage = ""
 
+    if (cmd.includes(prefix)) {
+        checkAccount(message.author.id, function(param) {
+            if (param) {
+                checkVersion(message.author.id, message.author.username)
+            }
+        })
+    }
+
     if(cmd == `${prefix}botinfo`) {
         let boticon = bot.user.displayAvatarURL
         let botembed = new Discord.RichEmbed()
@@ -50,7 +61,7 @@ bot.on("message", async (message) => {
         .addField("Name:", bot.user.username)
         .addField("Created At: ",bot.user.createdAt)
         .addField("Created By: ", "˜”*°•.˜”*°•| ﾧﾷﾷӃΙﾼ |•°*”˜.•°*”˜#9963")
-        .addField("Helpers: \n", "Darkspine77#1365\n ❄☟☜ 💣✌☠ 🕈☟⚐ 💧🏱☜✌😐💧 ✋☠ ☟✌☠👎💧#5916\n Ram#6816")
+        .addField("Helpers: \n", "Darkspine77#1365")
         message.channel.send(botembed)
     }
 
@@ -81,8 +92,9 @@ bot.on("message", async (message) => {
                     Name: message.author.username,
                     InQuest: false,
                     Inventory: [
-                        materials[0]
-                    ]
+
+                    ],
+                    Version: botVersion
                 }
                 database.update(value)
                 finalMessage += "__**Account Created**__\n"
@@ -159,6 +171,8 @@ bot.on("message", async (message) => {
                             finalMessage += "Name: " + data.Weapon.Name + "\n"
                             finalMessage += "Description: " + data.Weapon.Description + "\n"
                             finalMessage += "ID: " + Number(data.Weapon.Id+1) + "\n"
+                            finalMessage += "Node Slots: " + data.Weapon.Node_Slots + "\n"
+                            finalMessage += "Floor Found: " + data.Weapon.Floor + "\n"
                             finalMessage += "[ Attacks: ]\n"
                             finalMessage += "----------------------------------------------\n"
                             let keys = Object.keys(data.Weapon.Attacks)
@@ -305,25 +319,24 @@ bot.on("message", async (message) => {
                 if (snapshot.hasChild(message.mentions.users.first().id)) {
                     database = firebase.database().ref("Players/" + message.mentions.users.first().id)
         database.once('value').then(function(snapshot) {
-            let tempMessage = Object.entries(snapshot.val())
+            let tempMessage = snapshot.val()
             let temp = snapshot.val()
-            let id = tempMessage[17][1]+1
             finalMessage = "__**" + message.mentions.users.first().username + "**__\n"
             finalMessage += "```css\n"
-            finalMessage += "Start Time: " + tempMessage[16][1] + "\n"
-            if (tempMessage[3][1] == "") {
+            finalMessage += "Start Time: " + tempMessage.Start_Time + "\n"
+            if (tempMessage.Class == "") {
                 finalMessage += "Class: None\n"
             }
             else {
-                finalMessage += "Class: " + tempMessage[3][1] + "\n"
+                finalMessage += "Class: " + tempMessage.Class + "\n"
             }
-            finalMessage += "Level: " + tempMessage[11][1] + "\n"
-            finalMessage += "Health: " + tempMessage[8][1] + "\n"
-            finalMessage += "Lives: " + tempMessage[11][1] + "\n"
-            finalMessage += "Exp: " + tempMessage[6][1] + "\n"
-            finalMessage += "Coins: " + tempMessage[4][1] + "\n"
-            finalMessage += "Augments Remaining: " + tempMessage[2][1] + "\n"
-            finalMessage += "Energy: " + tempMessage[5][1] + "/" + tempMessage[5][1] + "\n"
+            finalMessage += "Level: " + tempMessage.Level + "\n"
+            finalMessage += "Health: " + tempMessage.Health + "/" + tempMessage.Health_Cap + "\n"
+            finalMessage += "Lives: " + tempMessage.Lives + "\n"
+            finalMessage += "Exp: " + tempMessage.Exp + "\n"
+            finalMessage += "Coins: " + tempMessage.Coins + "\n"
+            finalMessage += "Augments Remaining: " + tempMessage.Augments_Remaining + "\n"
+            finalMessage += "Energy: " + tempMessage.EnergyCap + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "[ Weapon ]\n"
             finalMessage += "   Name: " + temp.Weapon.Name + "\n"
@@ -348,10 +361,10 @@ bot.on("message", async (message) => {
             finalMessage += "   Ethereal: " + temp.Weapon.Ethereal + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "Armor: Will Add Later\n"
-            finalMessage += "[ Armor Class: " + tempMessage[1][1] + "]\n"
-            finalMessage += "[ Magic Defense: " + tempMessage[13][1] + "]\n"
-            finalMessage += "[ Physical Amp: " + tempMessage[15][1] + "]\n"
-            finalMessage += "[ Magic Amp: " + tempMessage[12][1] + "]\n"
+            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + "]\n"
+            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + "]\n"
+            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + "]\n"
+            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + "]\n"
             finalMessage += "```"
             message.channel.send(finalMessage)
     })
@@ -375,25 +388,24 @@ bot.on("message", async (message) => {
                     finalMessage = ""
         let database = firebase.database().ref("Players/" + message.author.id)
         database.once('value').then(function(snapshot) {
-            let tempMessage = Object.entries(snapshot.val())
+            let tempMessage = snapshot.val()
             let temp = snapshot.val()
-            let id = tempMessage[17][1]+1
             finalMessage = "__**" + message.author.username + "**__\n"
             finalMessage += "```css\n"
-            finalMessage += "Start Time: " + tempMessage[16][1] + "\n"
-            if (tempMessage[3][1] == "") {
+            finalMessage += "Start Time: " + tempMessage.Start_Time + "\n"
+            if (tempMessage.Class == "") {
                 finalMessage += "Class: None\n"
             }
             else {
-                finalMessage += "Class: " + tempMessage[3][1] + "\n"
+                finalMessage += "Class: " + tempMessage.Class + "\n"
             }
-            finalMessage += "Level: " + tempMessage[11][1] + "\n"
-            finalMessage += "Health: " + tempMessage[8][1] + "\n"
-            finalMessage += "Lives: " + tempMessage[11][1] + "\n"
-            finalMessage += "Exp: " + tempMessage[6][1] + "\n"
-            finalMessage += "Coins: " + tempMessage[4][1] + "\n"
-            finalMessage += "Augments Remaining: " + tempMessage[2][1] + "\n"
-            finalMessage += "Energy: " + tempMessage[5][1] + "/" + tempMessage[5][1] + "\n"
+            finalMessage += "Level: " + tempMessage.Level + "\n"
+            finalMessage += "Health: " + tempMessage.Health + "/" + tempMessage.Health_Cap + "\n"
+            finalMessage += "Lives: " + tempMessage.Lives + "\n"
+            finalMessage += "Exp: " + tempMessage.Exp + "\n"
+            finalMessage += "Coins: " + tempMessage.Coins + "\n"
+            finalMessage += "Augments Remaining: " + tempMessage.Augments_Remaining + "\n"
+            finalMessage += "Energy: " + tempMessage.EnergyCap + "/" + tempMessage.EnergyCap + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "[ Weapon ]\n"
             finalMessage += "   Name: " + temp.Weapon.Name + "\n"
@@ -418,10 +430,10 @@ bot.on("message", async (message) => {
             finalMessage += "   Ethereal: " + temp.Weapon.Ethereal + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "Armor: Will Add Later\n"
-            finalMessage += "[ Armor Class: " + tempMessage[1][1] + "]\n"
-            finalMessage += "[ Magic Defense: " + tempMessage[13][1] + "]\n"
-            finalMessage += "[ Physical Amp: " + tempMessage[15][1] + "]\n"
-            finalMessage += "[ Magic Amp: " + tempMessage[12][1] + "]\n"
+            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + "]\n"
+            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + "]\n"
+            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + "]\n"
+            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + "]\n"
             finalMessage += "```"
             message.channel.send(finalMessage)
     })
@@ -759,37 +771,44 @@ bot.on("message", async (message) => {
         database.once('value').then(function(snapshot) {
             let value = snapshot.val()
             if (value != null) {
-                let invLength = value.length
-                console.log(value.length)
-                let finalMessage = "__**Inventory** " + invLength + " items recorded__\n"
-                message.channel.send(finalMessage)
-                let invMessage = ""
-                let invMessages = [
-    
-                ]
-                for (let i = 0; i < value.length; i++) {
-                    if (invMessage.length >= 1900) {
-                        invMessages.push(invMessage)
-                        invMessage = ""
-                    }
-                    else {
-                        if (value[i].Type == "Material") {
-                            invMessage += "Slot " + (i + 1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + " -- x" + value[i].Count + "\n"
+                if (value.length != 0) {
+                    let invLength = value.length
+                    let finalMessage = "__**Inventory** " + (invLength) + " items recorded__\n"
+                    message.channel.send(finalMessage)
+                    let invMessage = ""
+                    let invMessages = [
+        
+                    ]
+                    for (let i = 0; i < value.length; i++) {
+                        if (invMessage.length >= 1900) {
+                            invMessages.push(invMessage)
+                            invMessage = ""
                         }
-                        else if (value[i].Type == "Weapon") {
-                            invMessage += "Slot " + (i + 1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + "\n"
+                        else {
+                            if (value[i].Type == "Material") {
+                                invMessage += "Slot " + (i+1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + " -- x" + value[i].Count + "\n"
+                            }
+                            else if (value[i].Type == "Weapon") {
+                                invMessage += "Slot " + (i+1) + ": " + value[i].Name + " -- " + value[i].Type + " -- Floor: " + value[i].Floor + "\n"
+                            }
+                        }
+                        if (i+1 == value.length) {
+                            invMessages.push(invMessage)
                         }
                     }
-                    if (i+1 == value.length) {
-                        invMessages.push(invMessage)
-                    }
+                    for (let i = 0; i < invMessages.length; i++) {
+                        finalMessage = "```css\n"
+                        finalMessage += invMessages[i]
+                        finalMessage += "```"
+                        message.channel.send(finalMessage)
+                    } 
                 }
-                for (let i = 0; i < invMessages.length; i++) {
-                    finalMessage = "```css\n"
-                    finalMessage += invMessages[i]
+                else {
+                    let finalMessage = "__**Inventory** " + 0 + " items recorded__\n"
+                    finalMessage += "```\n"
                     finalMessage += "```"
                     message.channel.send(finalMessage)
-                } 
+                }
             }
             else {
                 let finalMessage = "__**Inventory** " + 0 + " items recorded__\n"
@@ -800,10 +819,95 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}give`) {
-        invPush(message.author.id, materials[0], 1)
+        drops(enemies[0].Drop_Table, message.author.id, message.channel)
     }
 
 })
+
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+
+function checkVersion(playerId, messageUser) {
+    let database = firebase.database().ref("Players/" + playerId)
+    database.once('value').then(function(snapshot) {
+        let value = snapshot.val()
+        if (value.Version != botVersion) {
+            profileFix(playerId, messageUser)
+        }
+    })
+}
+
+function profileFix(playerId, messageUser) {
+    let database = firebase.database().ref("Players/" + playerId)
+    database.once('value').then(function(snapshot) {
+        let template = {
+            Health: 100,
+            Health_Cap: 100,
+            EnergyCap: 3,
+            Armor_Class: 5,
+            Magic_Defense: 5,
+            Physical_Amp: 0,
+            Magic_Amp: 0,
+            Class: 0,
+            InDuel: false,
+            Level: 1,
+            Augments_Remaining: 1,
+            Weapon: weapons[0],
+            Armor: 0,
+            Exp: 0,
+            Lives: 1,
+            Start_Time: Date(),
+            Coins: 0,
+            Class: "",
+            Name: messageUser,
+            InQuest: false,
+            Inventory: [
+
+            ],
+            Version: botVersion
+        }
+        let playerObject = snapshot.val()
+        for (var key in template) {
+            if (playerObject[key] == undefined) {
+                playerObject[key] = template[key]
+            }
+        }
+        playerObject.Version = botVersion
+        database.update(playerObject)
+    })
+}
+
+function drops(enemyDrop, playerId, messageChannel) {
+        let dropArray = [
+
+        ]
+        let finalMessage = "```css\n"
+        for (let i = 0; i < enemyDrop.length; i++) {
+            let r = Math.random()
+            if (r < enemyDrop[i].Chance) {
+                dropArray.push(enemyDrop[i])
+                finalMessage += "You have aqquired " + enemyDrop[i].Name + " -- ID: " + (enemyDrop[i].Id + 1) + " -- " + enemyDrop[i].Type + "\n"
+            }
+        }
+        invPush(playerId, dropArray)
+        finalMessage += "```"
+        if (dropArray.length == 0) {
+            finalMessage = "```\n"
+            finalMessage += "You have no aqquired anything\n"
+            finalMessage += "```"
+            messageChannel.send(finalMessage)
+        }
+        else {
+            messageChannel.send(finalMessage)
+        }
+}
 
 function helpCommand(messageAuthor, messageChannel) {
     let finalMessage = "```css\n"
@@ -847,53 +951,43 @@ function helpCommand(messageAuthor, messageChannel) {
         messageChannel.send(finalMessage)
 }
 
-function invPush(playerId, material, quanity) {
-    let database = firebase.database().ref("Players/" + playerId + "/Inventory")
+function invPush(playerId, materialArray) {
+    let database = firebase.database().ref("Players/" + playerId + "/Inventory/")
     database.once('value').then(function(snapshot) {
         let value = snapshot.val()
-        if (value == null) {
-            if (material.Type == "Material") {
-                let set = [
-                    material
-                ]
-                set[0].Count = quanity
-                database.update(set)
-            }
-            else if (material.Type == "Weapon") {
-                let set = [
-                    material
-                ]
-                database.update(set)
+        let inv = [
+            
+        ]
+        if (value != null) {
+            for (let i = 0; i < value.length; i++) {
+                inv.push(value[i])
             }
         }
-        else {
-            if (material.Type == "Material") {
-                canDo = false
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].Name == material.Name) {
-                        let database2 = firebase.database().ref("Players/" + playerId + "/Inventory/" + i)
-                        database2.once('value').then(function(snapshot2) {
-                            let value2 = snapshot2.val()
-                            let num = value2.Count
-                            num += quanity
-                            let count = {
-                                Count: num
-                            }
-                            database2.update(count)
-                        })
+        for (let i = 0; i < materialArray.length; i++) {
+            if (materialArray[i].Type == "Material") {
+                let canAdd = false
+                if (inv.length != 0) {
+                    for (let j = 0; j < inv.length; j++) {
+                        if ((materialArray[i].Type && materialArray[i].Name) == (inv[j].Type && inv[j].Name)) {
+                            inv[j].Count ++
+                        }
+                        else if (j == inv.length) {
+                            canAdd = true
+                        }
                     }
-                    else if (i == value.length-1) {
-                        canDo = true
+                    if (canAdd) {
+                        inv.push(materialArray[i])
                     }
                 }
-                if (canDo == true) {
-                    firebase.database().ref("Players/" + playerId + "/Inventory/" + value.length).set(material)
+                else {
+                    inv.push(materialArray[i])
                 }
             }
-            else if (material.Type == "Weapon") {
-                firebase.database().ref("Players/" + playerId + "/Inventory/" + value.length).set(material)
+            else if (materialArray[i].Type == "Weapon") {
+                inv.push(materialArray[i])
             }
         }
+        database.update(inv)
     })
 }
 
@@ -1692,9 +1786,9 @@ function seeMaterial(id) {
     finalMessage += "   Description: " + materials[id-1].Description + "\n"
     finalMessage += "   Floor Found: " + materials[id-1].Floor + "\n"
     finalMessage += "   Drop Chance: " + (materials[id-1].Chance * 100) + "%\n"
-    finalMessage += "[      Physical Amp: " + materials[id-1].Physical_Amp + " ]\n"
-    finalMessage += "[      Magical Amp: " + materials[id-1].Magical_Amp + " ]\n"
-    finalMessage += "[      Ethereal Amp: " + materials[id-1].Ethereal_Amp + " ]\n"
+    finalMessage += "[  Physical Amp: " + materials[id-1].Physical_Amp + " ]\n"
+    finalMessage += "[  Magical Amp: " + materials[id-1].Magical_Amp + " ]\n"
+    finalMessage += "[  Ethereal Amp: " + materials[id-1].Ethereal_Amp + " ]\n"
     finalMessage += "   Nodes: " + materials[id-1].Nodes + "\n"
     finalMessage += "----------------------------------------------\n"
     finalMessage += "```"
@@ -1709,6 +1803,7 @@ function seeWeapon(id) {
     finalMessage += "Name: " + weapons[id-1].Name + "\n"
     finalMessage += "Description: " + weapons[id-1].Description + "\n"
     finalMessage += "ID: " + Number(weapons[id-1].Id+1) + "\n"
+    finalMessage += "Node Slots: " + weapons[id-1].Node_Slots + "\n"
     finalMessage += "Floor Found: " + weapons[id-1].Floor + "\n"
     finalMessage += "[ Attacks: ]\n"
     finalMessage += "----------------------------------------------\n"

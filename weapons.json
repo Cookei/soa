@@ -23,6 +23,7 @@
         "Floor": 1,
         "Type": "Weapon",
         "Description": "A tree ripped from the Sylven plains. It has seen much use, perhaps banging against other foes. Termites bite and gnaw at the tree trunk making it quite fragile.",
+        "Chance": 0.1,
         "Physical": 12,
         "Magical": 3,
         "Ethereal": 0,
