@@ -19,7 +19,35 @@ var questObjects = [
 
 ]
 
-var botVersion = 0.1
+var botVersion = "0.1.1"
+
+var playerTemplate = {
+    Health: 100,
+    Health_Cap: 100,
+    EnergyCap: 3,
+    Armor_Class: 5,
+    Magic_Defense: 5,
+    Physical_Amp: 0,
+    Magic_Amp: 0,
+    Class: 0,
+    InDuel: false,
+    Level: 1,
+    Augments_Remaining: 1,
+    Weapon: weapons[0],
+    Armor: 0,
+    Exp: 0,
+    Lives: 1,
+    Start_Time: Date(),
+    Coins: 0,
+    Class: "",
+    Name: "",
+    InQuest: false,
+    Inventory: [
+
+    ],
+    Version: botVersion,
+    Floor: 1
+}
 
 var config = {
     apiKey: "AIzaSyBIkqcsvFQJjvHVzwA-y9_WlImEgPw9ftE",
@@ -70,32 +98,8 @@ bot.on("message", async (message) => {
         database.once("value").then(function(snapshot) {
             if (snapshot.val() == null) {
                 helpCommand(message.author, message.channel)
-                var value = {
-                    Health: 100,
-                    Health_Cap: 100,
-                    EnergyCap: 3,
-                    Armor_Class: 5,
-                    Magic_Defense: 5,
-                    Physical_Amp: 0,
-                    Magic_Amp: 0,
-                    Class: 0,
-                    InDuel: false,
-                    Level: 1,
-                    Augments_Remaining: 1,
-                    Weapon: weapons[0],
-                    Armor: 0,
-                    Exp: 0,
-                    Lives: 1,
-                    Start_Time: Date(),
-                    Coins: 0,
-                    Class: "",
-                    Name: message.author.username,
-                    InQuest: false,
-                    Inventory: [
-
-                    ],
-                    Version: botVersion
-                }
+                var value = playerTemplate
+                value.Name = message.author.username
                 database.update(value)
                 finalMessage += "__**Account Created**__\n"
                 finalMessage += "```\n"
@@ -310,6 +314,35 @@ bot.on("message", async (message) => {
             message.channel.send(finalMessage)
         }
     }
+    else if (cmd == `${prefix}floor`) {
+        if (messageArray[1]) {
+            if (!isNaN(messageArray[1])) {
+                if (messageArray[1] > floors.length || messageArray[1] < 1) {
+                    message.channel.send("`That Floor Does Not Exist`")
+                    return
+                }
+                message.channel.send(seeFloor(messageArray[1]))   
+            }
+            else {
+                message.channel.send("`That command does not exist`")
+            }
+        }
+        else {
+            finalMessage = "```css\n"
+            finalMessage += "[ Incorrect Command Usage: ]\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Description: ]\n"
+            finalMessage += "   Used to view the stats of any floor\n"
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "[ Usage: ]\n"
+            finalMessage += `   ${prefix}floor: Shows this text\n`
+            finalMessage += `   ${prefix}floor <Number>: Shows the stats of the given floor number\n`
+            finalMessage += "----------------------------------------------\n"
+            finalMessage += "```"
+            message.channel.send(finalMessage)
+        }
+    }
+
     else if (cmd == `${prefix}profile`) {
         if (messageArray[1]) {
             if (message.mentions.users.first()) {
@@ -335,6 +368,7 @@ bot.on("message", async (message) => {
             finalMessage += "Lives: " + tempMessage.Lives + "\n"
             finalMessage += "Exp: " + tempMessage.Exp + "\n"
             finalMessage += "Coins: " + tempMessage.Coins + "\n"
+            finalMessage += "Floor: " + tempMessage.Floor + "\n"
             finalMessage += "Augments Remaining: " + tempMessage.Augments_Remaining + "\n"
             finalMessage += "Energy: " + tempMessage.EnergyCap + "\n"
             finalMessage += "----------------------------------------------\n"
@@ -404,6 +438,7 @@ bot.on("message", async (message) => {
             finalMessage += "Lives: " + tempMessage.Lives + "\n"
             finalMessage += "Exp: " + tempMessage.Exp + "\n"
             finalMessage += "Coins: " + tempMessage.Coins + "\n"
+            finalMessage += "Floor: " + tempMessage.Floor + "\n"
             finalMessage += "Augments Remaining: " + tempMessage.Augments_Remaining + "\n"
             finalMessage += "Energy: " + tempMessage.EnergyCap + "/" + tempMessage.EnergyCap + "\n"
             finalMessage += "----------------------------------------------\n"
@@ -847,32 +882,8 @@ function checkVersion(playerId, messageUser) {
 function profileFix(playerId, messageUser) {
     let database = firebase.database().ref("Players/" + playerId)
     database.once('value').then(function(snapshot) {
-        let template = {
-            Health: 100,
-            Health_Cap: 100,
-            EnergyCap: 3,
-            Armor_Class: 5,
-            Magic_Defense: 5,
-            Physical_Amp: 0,
-            Magic_Amp: 0,
-            Class: 0,
-            InDuel: false,
-            Level: 1,
-            Augments_Remaining: 1,
-            Weapon: weapons[0],
-            Armor: 0,
-            Exp: 0,
-            Lives: 1,
-            Start_Time: Date(),
-            Coins: 0,
-            Class: "",
-            Name: messageUser,
-            InQuest: false,
-            Inventory: [
-
-            ],
-            Version: botVersion
-        }
+        let template = playerTemplate
+        template.Name = messageUser
         let playerObject = snapshot.val()
         for (var key in template) {
             if (playerObject[key] == undefined) {
@@ -1599,10 +1610,10 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
         let targetEnemy = enemy
         let finalMessage = "__**You have started a duel against " + targetEnemy.Name + "**__ Level: " + enemyLevel + "  Turn: " + turn
         value = true
-        let value2 = Object.entries(snapshot.val())
+        let value2 = snapshot.val()
         finalMessage += "\n```css\n"
-        finalMessage += "You have " + value2[7][1] + "/" + value2[8][1] + " Health remaining\n"
-        finalMessage += "You have " + value2[5][1] + "/" + value2[5][1] + " Energy remaining\n"
+        finalMessage += "You have " + value2.Health + "/" + value2.Health_Cap + " Health remaining\n"
+        finalMessage += "You have " + value2.EnergyCap + "/" + value2.EnergyCap + " Energy remaining\n"
         value = {
             InDuel: true
         }
@@ -1631,7 +1642,7 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
             ],
             EnemyArmorClass: Math.round(Math.random() * targetEnemy.Armor_Class[1] + targetEnemy.Armor_Class[0] * (targetEnemy.Level * 1.2)),
             EnemyMagicDefense: Math.round(Math.random() * targetEnemy.Magic_Defense[1] + targetEnemy.Magic_Defense[0] * (targetEnemy.Level * 1.2)),
-            EnemyWeapon: targetEnemy.Weapon,
+            EnemyWeapon: weapons[targetEnemy.Weapon],
             Turn: "Player",
             Enemy: targetEnemy.Id,
             EnemyLevel: enemyLevel
@@ -1673,6 +1684,10 @@ function enemyWeaponAttack(playerId, param) {
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)
                 finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7))+ " ] magical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerMagicDefense)
+                if (chosenAttack.Ethereal == true) {
+                    finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(duelObjects[i].EnemyWeapon.Ethereal) + " ] ethereal damage\n"
+                    damage += duelObjects[i].EnemyWeapon.Ethereal
+                }
                 finalMessage += "You took [ " + damage + " ] damage from " + chosenAttack.Name + "\n"
                 finalMessage += "\n"
                 duelObjects[i].EnemyEnergy -= chosenAttack.Cost
@@ -1695,6 +1710,9 @@ function enemyWeaponAttack(playerId, param) {
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)
                 // finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio)+ " ] magical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerMagicDefense)
+                if (chosenAttack.Ethereal == true) {
+                    damage += duelObjects[i].EnemyWeapon.Ethereal
+                }
                 finalMessage += "   You took [ " + damage + " ] damage from " + chosenAttack.Name + "\n"
                 finalMessage += "\n"
                 duelObjects[i].EnemyEnergy -= chosenAttack.Cost
@@ -1720,6 +1738,10 @@ function enemyEnemyAttack(playerId, param) {
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)
                 finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7))+ " ] magical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerMagicDefense)
+                if (chosenAttack.Ethereal == true) {
+                    finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(duelObjects[i].EnemyWeapon.Ethereal) + " ] ethereal damage\n"
+                    damage += duelObjects[i].EnemyWeapon.Ethereal
+                }
                 finalMessage += "You took [ " + damage + " ] damage from " + chosenAttack.Name + "\n"
                 finalMessage += "\n"
                 duelObjects[i].EnemyEnergy -= chosenAttack.Cost
@@ -1742,6 +1764,9 @@ function enemyEnemyAttack(playerId, param) {
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)
                 // finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio)+ " ] magical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Magical * chosenAttack.Magical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerMagicDefense)
+                if (chosenAttack.Ethereal == true) {
+                    damage += duelObjects[i].EnemyWeapon.Ethereal
+                }
                 finalMessage += "   You took [ " + damage + " ] damage from " + chosenAttack.Name + "\n"
                 finalMessage += "\n"
                 duelObjects[i].EnemyEnergy -= chosenAttack.Cost
@@ -1752,27 +1777,22 @@ function enemyEnemyAttack(playerId, param) {
     }
 }
 
-function checkArray(arr1, arr2) {
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] != arr2[i]) 
-            return false
-    return true
+function seeFloor(id) {
+    let finalMessage = ""
+    if (isNaN(id)) return "`An ERROR has occured. You must put the floor number in the parameter`"
+    finalMessage = "__**" + floors[id-1].Name + "**__  " + Number(floors[id-1].Number) + "/" + floors.length + "\n"
+    finalMessage += "```css\n"
+    finalMessage += "----------------------------------------------\n"
+    finalMessage += "   Name: " + floors[id-1].Name + "\n"
+    finalMessage += "   Floor Number: " + Number(floors[id-1].Number) + "\n"
+    finalMessage += "   Description: " + floors[id-1].Description + "\n"
+    finalMessage += "   [ Enemy List: ] \n"
+    for (let i = 0; i < floors[id-1].EnemyArray.length; i++) {
+        finalMessage += "       [" + enemies[floors[id-1].EnemyArray[i]].Name + "] ID: " + enemies[floors[id-1].EnemyArray[i]].Id + "\n"
     }
-}
-
-function shuffleArray(array) {
-    let currentIndex = array.length
-    let temporaryValue, randomIndex
-
-    while (0 !== currentIndex) {
-        randomIndex = Math.floor(Math.random() * currentIndex)
-        currentIndex -= 1
-
-        temporaryValue = array[currentIndex]
-        array[currentIndex] = array[randomIndex]
-        array[randomIndex] = temporaryValue
-    }
-    return array
+    finalMessage += "----------------------------------------------\n"
+    finalMessage += "```"
+    return finalMessage
 }
 
 function seeMaterial(id) {
@@ -1807,15 +1827,15 @@ function seeWeapon(id) {
     finalMessage += "Floor Found: " + weapons[id-1].Floor + "\n"
     finalMessage += "[ Attacks: ]\n"
     finalMessage += "----------------------------------------------\n"
-    let keys = Object.keys(weapons[id-1].Attacks)
-    for(var i = 0; i < keys.length; i++) {
-        j = attacks[i]
+    for(var i = 0; i < weapons[id-1].Attacks.length; i++) {
+        j = attacks[weapons[id-1].Attacks[i]]
         finalMessage += "   Name: " + j.Name + "\n"
         finalMessage += "   ID: " + Number(j.Id+1) + "\n"
         finalMessage += "   Description: " + j.Description + "\n"
         finalMessage += "[  Cost: " + j.Cost + " ]\n"
         finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
         finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
+        finalMessage += "[  Ethereal Application: " + j.Ethereal + " ]\n"
         finalMessage += "----------------------------------------------\n"
     }
     finalMessage += "\n"
@@ -1839,6 +1859,7 @@ function seeAttack(id) {
     finalMessage += "[  Cost: " + attacks[id-1].Cost + " ]\n"
     finalMessage += "[  Physical Ratio: " + attacks[id-1].Physical_Ratio * 100 + "% ]\n"
     finalMessage += "[  Magical Ratio: " + attacks[id-1].Magical_Ratio * 100 + "% ]\n"
+    finalMessage += "[  Ethereal Application: " + attacks[id-1].Ethereal + " ]\n"
     finalMessage += "----------------------------------------------\n"
     finalMessage += "```"
     return finalMessage
@@ -1886,11 +1907,12 @@ function seeEnemy(id) {
     for(var i = 0; i < keys2.length; i++) {
         j = attacks[keys2]
         finalMessage += "   Name: " + j.Name + "\n"
-        finalMessage += "   ID: " + Number(j.Id) + "\n"
+        finalMessage += "   ID: " + Number(j.Id+1) + "\n"
         finalMessage += "   Description: " + j.Description + "\n"
         finalMessage += "[  Cost: " + j.Cost + " ]\n"
         finalMessage += "[  Physical Ratio: " + j.Physical_Ratio * 100 + "% ]\n"
         finalMessage += "[  Magical Ratio: " + j.Magical_Ratio * 100 + "% ]\n"
+        finalMessage += "[  Ethereal Application: " + j.Ethereal + " ]\n"
         finalMessage += "----------------------------------------------\n"
     }
     finalMessage += "```"

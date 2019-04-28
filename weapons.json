@@ -20,7 +20,7 @@
     {
         "Name": "Battered Tree Trunk",
         "Id": 1,
-        "Floor": 1,
+        "Floor": "1 - 3",
         "Type": "Weapon",
         "Description": "A tree ripped from the Sylven plains. It has seen much use, perhaps banging against other foes. Termites bite and gnaw at the tree trunk making it quite fragile.",
         "Chance": 0.1,
@@ -34,5 +34,24 @@
 
         ],
         "Node_Slots": 5
+    },
+    {
+        "Name": "Flesh Rending Jaws",
+        "Id": 2,
+        "Floor": "1 - 2",
+        "Type": "Weapon",
+        "Description": "The fangs of the Jawwarm. It is strong enough to tear through flesh, bits of corpse litter it's mouth from the previous prey it has hunted.",
+        "Chance": 0.2,
+        "Physical": 20,
+        "Magical": 0,
+        "Ethereal": 3,
+        "Attacks": [
+            3,
+            4
+        ],
+        "Statuses": [
+
+        ],
+        "Node_Slots": 2
     }
 ]

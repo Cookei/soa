@@ -69,5 +69,43 @@
                 "Node_Slots": 5
             }
         ]
+    },
+    {
+        "Name": "Jawworm",
+        "Id": 1,
+        "Description": "A primitive creature that is found in the lower levels of the spire. It is a worm that is consistested of mostly a mouth. Razor sharp teeth line its jaws as it gnaws its way towards flesh. It lives underground, burrowing underneath the floor and crawling to its next prey.",
+        "Level": 1,
+        "Health": [
+            0,
+            10
+        ],
+        "Energy": 5,
+        "Floor": [
+            1,
+            2
+        ],
+        "Armor_Class": [
+            4,
+            6
+        ],
+        "Magic_Defense": [
+            0,
+            7
+        ],
+        "Weapon": 2,
+        "Speed": [
+            4,
+            7
+        ],
+        "Perception": [
+            15,
+            30
+        ],
+        "Attacks": [
+            5
+        ],
+        "Drop_Table": [
+
+        ]
     }
 ]
