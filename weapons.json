@@ -42,7 +42,7 @@
         "Type": "Weapon",
         "Description": "The fangs of the Jawwarm. It is strong enough to tear through flesh, bits of corpse litter it's mouth from the previous prey it has hunted.",
         "Chance": 0.2,
-        "Physical": 20,
+        "Physical": 15,
         "Magical": 0,
         "Ethereal": 3,
         "Attacks": [

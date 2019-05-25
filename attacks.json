@@ -35,8 +35,8 @@
         "Type": "Weapon",
         "Description": "You jump at the enemy gnawing at their skin and bones.",
         "Cost": 1,
-        "Physical_Ratio": 0.65,
-        "Magical_Ratio": 0.25,
+        "Physical_Ratio": 0.45,
+        "Magical_Ratio": 0,
         "Ethereal": true
     },
     {
@@ -54,7 +54,7 @@
         "Id": 5,
         "Type": "Enemy",
         "Description": "The enemy bites you and sinks their teeth into your flesh",
-        "Cost": 2,
+        "Cost": 3,
         "Physical_Ratio": 1.2,
         "Magical_Ratio": 0.5,
         "Ethereal": true

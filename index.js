@@ -1,6 +1,7 @@
 const Discord = require("discord.js")
 const bot = new Discord.Client()
 const firebase = require("firebase")
+var date = require("date-and-time");
 // const fs = require('fs');
 // let rawWeaponData = fs.readFileSync('weapons.json');  
 // let weapons = JSON.parse(rawWeaponData);
@@ -72,7 +73,7 @@ bot.on("message", async (message) => {
     let cmd = messageArray[0]
     let finalMessage = ""
 
-    if (cmd.includes(prefix)) {
+    if (cmd.includes(prefix) && cmd != `${prefix}create`) {
         checkAccount(message.author.id, function(param) {
             if (param) {
                 checkVersion(message.author.id, message.author.username)
@@ -100,6 +101,8 @@ bot.on("message", async (message) => {
                 helpCommand(message.author, message.channel)
                 var value = playerTemplate
                 value.Name = message.author.username
+                var DATE = new Date();
+                value.Start_Time = date.format(DATE, 'ddd MMM DD YYYY')
                 database.update(value)
                 finalMessage += "__**Account Created**__\n"
                 finalMessage += "```\n"
@@ -1788,7 +1791,7 @@ function seeFloor(id) {
     finalMessage += "   Description: " + floors[id-1].Description + "\n"
     finalMessage += "   [ Enemy List: ] \n"
     for (let i = 0; i < floors[id-1].EnemyArray.length; i++) {
-        finalMessage += "       [" + enemies[floors[id-1].EnemyArray[i]].Name + "] ID: " + enemies[floors[id-1].EnemyArray[i]].Id + "\n"
+        finalMessage += "       [" + enemies[floors[id-1].EnemyArray[i]].Name + "] ID: " + (enemies[floors[id-1].EnemyArray[i]].Id + 1) + "\n"
     }
     finalMessage += "----------------------------------------------\n"
     finalMessage += "```"

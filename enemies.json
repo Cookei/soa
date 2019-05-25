@@ -105,7 +105,22 @@
             5
         ],
         "Drop_Table": [
-
+            {
+                "Name": "Sharpened Fangs",
+                "Id": 1,
+                "Floor": 1,
+                "Count": 1,
+                "Type": "Material",
+                "Description": "The fangs of a Jawworm. Some people have used it to sharpen their weapons and improve them but other than that, it has little use.",
+                "Chance": 0.25,
+                "Physical_Amp": 3,
+                "Magical_Amp": 0,
+                "Ethereal_Amp": 2,
+                "Nodes": 1,
+                "Status": [
+        
+                ]
+            }
         ]
     }
 ]
