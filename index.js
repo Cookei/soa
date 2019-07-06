@@ -20,7 +20,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.1.1"
+var botVersion = "0.2.1"
 
 var playerTemplate = {
     Health: 100,
@@ -61,7 +61,7 @@ var config = {
 firebase.initializeApp(config)
 
 bot.on("ready", async () => {
-    bot.user.setActivity("Ascension")
+    bot.user.setActivity("Ascension v" + botVersion)
     console.log("Bot is ready")
 })
 
@@ -73,7 +73,7 @@ bot.on("message", async (message) => {
     let cmd = messageArray[0]
     let finalMessage = ""
 
-    if (cmd.includes(prefix) && cmd != `${prefix}create`) {
+    if (cmd.includes(prefix) && cmd != `${prefix}create` && cmd != `${prefix}remove` && cmd != `${prefix}y` && cmd != `${prefix}n` && cmd != `${prefix}yes` && cmd != `${prefix}no`) {
         checkAccount(message.author.id, function(param) {
             if (param) {
                 checkVersion(message.author.id, message.author.username)
@@ -140,6 +140,16 @@ bot.on("message", async (message) => {
                 message.channel.awaitMessages(filter, {max: 1, time: 7000}).then(collected => {
                     if(collected.first().content === `${prefix}yes` || collected.first().content === `${prefix}y`) {
                         removeAccount(message.author.id, function() {
+                            for (let i = 0; i < duelObjects.length; i++) {
+                                if (duelObjects[i].playerId == message.author.id) {
+                                    duelObjects.splice(i)
+                                }
+                            }
+                            for (let i = 0; i < questObjects.length; i++) {
+                                if (questObjects[i].playerId == message.author.id) {
+                                    questObjects.splice(i)
+                                }
+                            }
                             database.child(message.author.id).remove()
                             finalMessage = "```\n"
                             finalMessage += "You feel a tug in your soul. Has it finally been the end? Is this... what is left of you? A hollow shell... a faltered will. You close your eyes as you slump to the floor, your consciousness fading. You hear a crude laugh echo in the distance before you slip into darkness. The spire beckons you. The spire laughs at your weakness....\n"
@@ -202,7 +212,7 @@ bot.on("message", async (message) => {
                         })
                     }
                     else {
-                        message.channel.send("```\nYou do not exist yet in this tower\n```")
+                        message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                     }
                 })
             }
@@ -418,7 +428,7 @@ bot.on("message", async (message) => {
         else {
             checkAccount(message.author.id, function(param) {
                 if (param == true) {
-                // if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\n```")
+                // if (checkAccount(message.author.id) == false) return message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
             let database = firebase.database().ref("Players/")
             database.once("value").then(function(snapshot) {
                 if (snapshot.hasChild(message.author.id)) {
@@ -482,7 +492,7 @@ bot.on("message", async (message) => {
             })
                 }
                 else {
-                    message.channel.send("```\nYou do not exist yet in this tower\n```")
+                    message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                     return
                 }
             })
@@ -524,7 +534,7 @@ bot.on("message", async (message) => {
                 })
             }
             else {
-                message.channel.send("```\nYou do not exist yet in this tower\n```")
+                message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                 return
             }
         })
@@ -645,7 +655,7 @@ bot.on("message", async (message) => {
                     }
                 }
                 else {
-                    message.channel.send("```\nYou do not exist yet in this tower\n```")
+                    message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                     return
                 }
             }) 
@@ -699,7 +709,7 @@ bot.on("message", async (message) => {
                 })
             }
             else {
-                message.channel.send("```\nYou do not exist yet in this tower\n```")
+                message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                 return
             }
         }) 
@@ -710,7 +720,7 @@ bot.on("message", async (message) => {
                 endPlayerTurn(messageArray, message.channel, message)
             }
             else {
-                message.channel.send("```\nYou do not exist yet in this tower\n```")
+                message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                 return
             }
         })
@@ -731,7 +741,7 @@ bot.on("message", async (message) => {
                         database.update(value)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         message.channel.send("```css\nYou have fled from battle\n```")
@@ -739,7 +749,7 @@ bot.on("message", async (message) => {
                 })
             }
             else {
-                message.channel.send("```\nYou do not exist yet in this tower\n```")
+                message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                 return
             }
         })
@@ -784,7 +794,7 @@ bot.on("message", async (message) => {
                     }
                 }
                 else {
-                    message.channel.send("```\nYou do not exist yet in this tower\n```")
+                    message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
                     return
                 }
             })
@@ -858,6 +868,9 @@ bot.on("message", async (message) => {
     }
     else if (cmd == `${prefix}give`) {
         drops(enemies[0].Drop_Table, message.author.id, message.channel)
+    }
+    else if (cmd == `${prefix}quest`) {
+        initQuest(1, message.author.id, message.channel, "Start")
     }
 
 })
@@ -1028,7 +1041,7 @@ function removeAccount(messageAuthor, callback) {
             database.update(value)
             for (let i = 0; i < duelObjects.length; i++) {
                 if (duelObjects[i].PlayerId == messageAuthor) {
-                    duelObjects.splice(i, 1)
+                    duelObjects.splice(i)
                 }
             }
             value2 = {
@@ -1037,7 +1050,7 @@ function removeAccount(messageAuthor, callback) {
             database.update(value2)
             for (let i = 0; i < questObjects.length; i++) {
                 if (questObjects[i].PlayerId == messageAuthor) {
-                    questObjects.splice(i, 1)
+                    questObjects.splice(i)
                 }
             }
             callback()
@@ -1049,7 +1062,7 @@ function removeAccount(messageAuthor, callback) {
             database.update(value)
             for (let i = 0; i < questObjects.length; i++) {
                 if (questObjects[i].PlayerId == messageAuthor) {
-                    questObjects.splice(i, 1)
+                    questObjects.splice(i)
                 }
             }
         }
@@ -1060,7 +1073,7 @@ function removeAccount(messageAuthor, callback) {
             database.update(value)
             for (let i = 0; i < duelObjects.length; i++) {
                 if (duelObjects[i].PlayerId == messageAuthor) {
-                    duelObjects.splice(i, 1)
+                    duelObjects.splice(i)
                 }
             }
             callback()
@@ -1119,7 +1132,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1143,7 +1156,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1163,7 +1176,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1206,7 +1219,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1226,7 +1239,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1246,7 +1259,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1319,7 +1332,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1339,7 +1352,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1359,7 +1372,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1402,7 +1415,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1422,7 +1435,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1442,7 +1455,7 @@ database.once('value').then(function (snapshot) {
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
-                                duelObjects.splice(i, 1)
+                                duelObjects.splice(i)
                             }
                         }
                         if (value.InQuest == true) {
@@ -1516,6 +1529,33 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                 let update = {
                                     InQuest: false
                                 }
+                                questObjects.splice(i)
+                                database.update(update)
+                            }
+                            else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndFail") {
+                                finalMessage = "```css\n"
+                                finalMessage += "You have [failed] this quest" + "\n"
+                                finalMessage += "```"
+                                messageChannel.send(finalMessage)
+                                let update = {
+                                    InQuest: false
+                                }
+                                questObjects.splice(i)
+                                database.update(update)
+                            }
+                            else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndPass") {
+                                finalMessage = "```css\n"
+                                finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
+                                finalMessage += "```"
+                                messageChannel.send(finalMessage)
+                                finalMessage = "```css\n"
+                                finalMessage += selectQuest.EndMessage + "\n"
+                                finalMessage += "```"
+                                messageChannel.send(finalMessage)
+                                let update = {
+                                    InQuest: false
+                                }
+                                questObjects.splice(i)
                                 database.update(update)
                             }
                         }
@@ -1547,6 +1587,33 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                             let update = {
                                 InQuest: false
                             }
+                            questObjects.splice(i)
+                            database.update(update)
+                        }
+                        else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndFail") {
+                            finalMessage = "```css\n"
+                            finalMessage += "You have [failed] this quest" + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            let update = {
+                                InQuest: false
+                            }
+                            questObjects.splice(i)
+                            database.update(update)
+                        }
+                        else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndPass") {
+                            finalMessage = "```css\n"
+                            finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            finalMessage = "```css\n"
+                            finalMessage += selectQuest.EndMessage + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            let update = {
+                                InQuest: false
+                            }
+                            questObjects.splice(i)
                             database.update(update)
                         }
                         else if (selectQuest.Script[questObjects[i].QuestPosition][0] == "Battle") {
@@ -1568,7 +1635,22 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                         }
                     }
                     else if (status == "Continue Text") {
-                        if (selectQuest.Script[questObjects[i].QuestPosition][2] === "End") {
+                        if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndFail") {
+                            finalMessage = "```css\n"
+                            finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            finalMessage = "```css\n"
+                            finalMessage += "You have [failed] this quest" + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            let update = {
+                                InQuest: false
+                            }
+                            questObjects.splice(i)
+                            database.update(update)
+                        }
+                        else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndPass") {
                             finalMessage = "```css\n"
                             finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
                             finalMessage += "```"
@@ -1580,6 +1662,7 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                             let update = {
                                 InQuest: false
                             }
+                            questObjects.splice(i)
                             database.update(update)
                         }
                         else if (selectQuest.Script[questObjects[i].QuestPosition][0] == "Battle") {
@@ -1636,15 +1719,15 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
             PlayerMagicDefense: value3.Magic_Defense,
             PlayerWeapon: value3.Weapon,
             PlayerPreviousHp: value3.Health,
-            EnemyHp: targetEnemy.Health[1] * (targetEnemy.Level * 1.5),
-            EnemyMaxHp: targetEnemy.Health[1] * (targetEnemy.Level * 1.5),
+            EnemyHp: targetEnemy.Health[1] * (targetEnemy.Level),
+            EnemyMaxHp: targetEnemy.Health[1] * (targetEnemy.Level),
             EnemyEnergy: targetEnemy.Energy,
             EnemyMaxEnergy: targetEnemy.Energy,
             EnemyAttackQueue: [
     
             ],
-            EnemyArmorClass: Math.round(Math.random() * targetEnemy.Armor_Class[1] + targetEnemy.Armor_Class[0] * (targetEnemy.Level * 1.2)),
-            EnemyMagicDefense: Math.round(Math.random() * targetEnemy.Magic_Defense[1] + targetEnemy.Magic_Defense[0] * (targetEnemy.Level * 1.2)),
+            EnemyArmorClass: Math.round(Math.random() * (targetEnemy.Armor_Class[1] - targetEnemy.Armor_Class[0]) + targetEnemy.Armor_Class[0]) * targetEnemy.Level,
+            EnemyMagicDefense: Math.round(Math.random() * (targetEnemy.Magic_Defense[1] - targetEnemy.Magic_Defense[0]) + targetEnemy.Magic_Defense[0]) * targetEnemy.Level,
             EnemyWeapon: weapons[targetEnemy.Weapon],
             Turn: "Player",
             Enemy: targetEnemy.Id,
@@ -1735,7 +1818,8 @@ function enemyEnemyAttack(playerId, param) {
                 let finalMessage = ""
                 var availableEnemyAttacks = enemies[duelObjects[i].Enemy].Attacks
                 let chosenAttack = attacks[availableEnemyAttacks[Math.floor(Math.random() * availableEnemyAttacks.length)]]
-                let damage = 0
+                let damage = 0;
+                console.log(enemy)
                 finalMessage += enemy.Name + " used [ " + chosenAttack.Name + " ]\n"
                 finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)) + " ] physical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)

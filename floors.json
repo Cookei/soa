@@ -5,7 +5,8 @@
         "Description": "The very bottom floor of the spire. A dark atmosphere looms over this plane. In the very center there is the initation field, a place where new adventurers come to face the horrers of the sprire. Stonework patches litter the floor everywhere, perhaps a reminiscence of the previous times before. Not much activity goes around down here yet a feeling of sorrow looms over all",
         "EnemyArray": [
             0,
-            1
+            1,
+            2
         ],
         "Locations": [
 

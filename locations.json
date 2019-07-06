@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "Recollection Shrine",
+        "Description": "",
+        "Type": "Event",
+        "Chance": 1,
+        "Id": 0,
+        "Floor": 1,
+        "Quest:": 1
+    }
+]

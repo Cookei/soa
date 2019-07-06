@@ -30,5 +30,22 @@
         "Status": [
 
         ]
+    },
+    {
+        "Name": "Fangs of Eternity",
+        "Id": 2,
+        "Floor": 1,
+        "Count": 1,
+        "Type": "Material",
+        "Description": "Shards of the cloak that the Servant of Memories wear. It feels... familier but you can't put a finger on it",
+        "Chance": 0.15,
+        "Physical_Amp": -1,
+        "Magical_Amp": 2,
+        "Ethereal_Amp": 4,
+        "Nodes": 1,
+        "Status": [
+
+        ]
     }
+    
 ]

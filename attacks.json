@@ -58,5 +58,25 @@
         "Physical_Ratio": 1.2,
         "Magical_Ratio": 0.5,
         "Ethereal": true
+    },
+    {
+        "Name": "Recollection",
+        "Id": 6,
+        "Type": "Weapon",
+        "Description": "You dig into the mind of your enemy, pulling their vulnerabilities, they're past out, rending their soul",
+        "Cost": 1,
+        "Physical_Ratio": 0,
+        "Magical_Ratio": 1.2,
+        "Ethereal": true
+    },
+    {
+        "Name": "Desecrate",
+        "Id": 7,
+        "Type": "Enemy",
+        "Description": "The shrine maiden lands a devastating slam on you with her wand. It seems like it shouldn't do much, but it shatters your very soul",
+        "Cost": 5,
+        "Physical_Ratio": 0.4,
+        "Magical_Ratio": 3,
+        "Ethereal": true
     }
 ]

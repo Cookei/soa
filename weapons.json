@@ -53,5 +53,23 @@
 
         ],
         "Node_Slots": 2
+    },
+    {
+        "Name": "Sentimentental Force of Will",
+        "Id": 3,
+        "Floor": "1",
+        "Type": "Weapon",
+        "Description": "The art of the Shrine of Recollection, it is a sacred power, said to use your past against you, into the future. Some say it even unlocks what you have previous forogtten.",
+        "Chance": 0.12,
+        "Physical": 5,
+        "Magical": 10,
+        "Ethereal": 10,
+        "Attacks": [
+            6
+        ],
+        "Statuses": [
+
+        ],
+        "Node_Slots": 2
     }
 ]

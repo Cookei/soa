@@ -122,5 +122,95 @@
                 ]
             }
         ]
+    },
+    {
+        "Name": "Servant of Memories",
+        "Id": 2,
+        "Description": "An ethereal ghost like creature that resembles a human. It has been here in the Recollection for what seems like ages, doing its duty, serving the shrine maiden. A deep purple glow envelops them in what seems to be some sort of aura.",
+        "Level": 1,
+        "Health": [
+            32,
+            37
+        ],
+        "Energy": 2,
+        "Floor": [
+            1,
+            1
+        ],
+        "Armor_Class": [
+            2,
+            4
+        ],
+        "Magic_Defense": [
+            6,
+            10
+        ],
+        "Weapon": 3,
+        "Speed": [
+            4,
+            7
+        ],
+        "Perception": [
+            50,
+            60
+        ],
+        "Attacks": [
+            
+        ],
+        "Drop_Table": [
+            {
+                "Name": "Fangs of Eternity",
+                "Id": 2,
+                "Floor": 1,
+                "Count": 1,
+                "Type": "Material",
+                "Description": "Shards of the cloak that the Servant of Memories wear. It feels... familier but you can't put a finger on it",
+                "Chance": 0.15,
+                "Physical_Amp": -1.3,
+                "Magical_Amp": 0.1,
+                "Ethereal_Amp": 4,
+                "Nodes": 1,
+                "Status": [
+        
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Recollection Shrine Maiden",
+        "Id": 3,
+        "Description": "An inhuman wraith, the guardian of one of the lesser shrines in the spire. Serving the Recollection shrine, she has been here for longer than you can possibly imagine",
+        "Level": 1,
+        "Health": [
+            1,
+            1
+        ],
+        "Energy": 5,
+        "Floor": [
+            10,
+            10
+        ],
+        "Armor_Class": [
+            3,
+            3
+        ],
+        "Magic_Defense": [
+            15,
+            15
+        ],
+        "Weapon": 3,
+        "Speed": [
+            6,
+            6
+        ],
+        "Perception": [
+            80,
+            80
+        ],
+        "Attacks": [
+            7
+        ],
+        "Drop_Table": [
+        ]
     }
 ]

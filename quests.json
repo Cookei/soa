@@ -82,7 +82,7 @@
             [
                 "Text",
                 "[You do what everyone else does. You survive. You can also be an ascender. It has been said that those who climb to the top of the spire get untold riches and power, I don't think I know anyone who has... I mainly want to go up there to find out... why I am here. To survive you must get stronger, you must kill and improve yourself. At your current state, I'd be surprised if you survived the first two floors of this spire.]",
-                "End"
+                "EndPass"
             ]
         ],
         "EnemyList": [
@@ -141,6 +141,560 @@
             }
         ],
         "EndMessage": "Quest Complete! Use the venture command to continue to progress!"
+    
+    },
+    {
+        "QuestName": "Semblence of Past",
+        "Id": 1,
+        "Script": [
+            [
+                "Battle",
+                0,
+                1,
+                31
+            ],
+            [
+                "Text",
+                "What was that? You ask yourself. The dark cavern watches you ominiously. You get a feeling that there are [ more ]",
+                [
+                    [
+                        "Trek onwards",
+                        2
+                    ]
+                ]
+            ],
+            [
+                "Battle",
+                0,
+                3,
+                31
+            ],
+            [
+                "Text",
+                "The keep coming unrelentlessly. Where are they coming from? Ahead of you, you notice what seems to be a [ crypt ], however it is too dark for you to make out much more.",
+                [
+                    [
+                        "Head into the crypt",
+                        4
+                    ],
+                    [
+                        "Ignore it and keep going onwards",
+                        5
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "As you head into the [ crypt ], a Jawworm leaps out of the shadows and jumps at you.",
+                [
+                    [
+                        "Attempt to kill it",
+                        8
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "As you walk away, you feel a [ dark tug ] in your mind, ever so slight. You look back at the crypt. Nothing seems out of the ordinary.",
+                [
+                    [
+                        "Shrug it off, it's not a big deal.",
+                        6
+                    ],
+                    [
+                        "Turn around and head back to the crypt",
+                        4
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "As you continue walking, that tug gets stronger, almost like it's pulling you in, [ deperately ]. You try to shrug it off, but it grasps at your mind, beckoning you to walk closer.",
+                [
+                    [
+                        "Shrug it off, it's not a big deal.",
+                        7
+                    ],
+                    [
+                        "Turn around and head back to the crypt",
+                        4
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "You walk farther and farther away. You can't even see the crypt now but you feel a [ desire ] within you to return. What is it about that damn crypt!? You ask yourself. It becomes harder to walk. You wonder if you even are making progress at this point. Sweat coalesces at your brow. You can't seem to move any further, despite your best attempts.",
+                [
+
+                    [
+                        "Turn around and head back to the crypt",
+                        4
+                    ]
+                ]
+            ],
+            [
+                "Battle",
+                0,
+                9,
+                31
+            ],
+            [
+                "Text",
+                "As you slay the beast, you hear an [ eerie howl ] as the wind enters through the crevacis of the crypt. Suddenly, in the [ darkness ], you hear footsteps emerging. Coalescing in front of you, is what seems to be a young wraith in the form of a maiden. Her drab dark purple dress draps across her frame. An ominious purple glow flickers around her, excerting some sort of [ power ]. She leaps at you, a scythe appearing out of what seems to be thin air and [ strikes ] at you.",
+                [
+                    [
+                        "Fight",
+                        10
+                    ]
+                ]
+            ],
+            [
+                "Battle",
+                1,
+                11,
+                32
+            ],
+            [
+                "Text",
+                "The servant whisks away into the darkness. Vanishing without a trace. An ominous [ silence ] drops over you. The dripping of the water, the wind howling, all gone. A sense of eerieness shrouds you.",
+                [
+                    [
+                        "Continue onwards",
+                        12
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "As you [ continue ] forward, a great mist shrouds you. You quickly become [ lost ] in the darkness. However, you seem to know where you're heading... [ like you've been here before ]",
+                [
+                    [
+                        "Continue onwards",
+                        13
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "As you're walking, out of nowhere, steps start appearing. The seem to be made of stone, showing signs of age. Looking up, you see a [ shrine gate ] greeting you. It stretches high into the sky and it glows with a dark purple prescense. Upon looking further on, you see a young maiden at the top of the stairs. She seems.. different than the one you encountered earlier; exerting more power around her. She wears a deep purple silk hakama like dress. In her hand she seems to hold a black wand. She instantly jumps towards you, intending to [ strike. ]",
+                [
+                    [
+                        "Fight",
+                        14
+                    ]
+                ]
+            ],
+            [
+                "Battle",
+                2,
+                15,
+                16
+            ],
+            [
+                "Text",
+                "She leaps back, vanishing into nothing. Her voice echoes around you. [ They never do learn.. do they ]. The crypt around you fades, the mist lightens. You are left alone in desolation",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "A brief spark of [ recognition ] lights up in her eyes. After a moment of hesitation, she decides not to kill you. You see her open her mouth to say something, but something about the way you look at her makes her stop",
+                [
+                    [
+                        "Leap at her to attack her again",
+                        17
+                    ],
+                    [
+                        "[ Who are you ]",
+                        18
+                    ],
+                    [
+                        "[ Why didn't you kill me? ]",
+                        21
+                    ],
+                    [
+                        "[ What is this place? ]",
+                        33
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "She easily dispels your attack and sends you flying back. She sighs a heavy sigh of sadness. [ Has it gotten you as well? ]. She fades into nothingness. The crypt around you fades, the mist lightens. You are left alone in desolation",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "[ What do you mean... who am I?] She says cautiously. She takes a step back, eyeing you inquisitively",
+                [
+                    [
+                        "[ I mean, who are you? ]",
+                        19
+                    ],
+                    [
+                        "[ Of course, it's been a long time. My memory is a bit hazy ]",
+                        20
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "She sighs a heavy sigh of sadness. [ It has gotten you as well I see ]. She fades into nothingness. The crypt around you fades, the mist lightens. You are left alone in desolation",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "She begins to become more relaxed and slumps along the side of a pillar. [ Glad to see one of you escaped. I'm actually fairly new, maybe that's why you don't recognize me. New in my terms at least. ]",
+                [
+                    [
+                        "[ Why didn't you kill me? ]",
+                        21
+                    ],
+                    [
+                        "[ What is this place? ]",
+                        22
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ Why didn't I kill you? Why would I? I've been desperate to actually find one of you actually. Thank god you seem to have escaped the Ruination. I think I may have figured out a way to leave. ]",
+                [
+                    [
+                        "[ Ruination? What do you mean? ]",
+                        22
+                    ],
+                    [
+                        "[ You said something about leaving? ]",
+                        25
+                    ],
+                    [
+                        "[ What is this place? ]",
+                        36
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ You mean you don't know it? ] She says with an edge to her voice",
+                [
+                    [
+                        "Press on about the Ruination",
+                        23
+                    ],
+                    [
+                        "[ I don't really remember much, can you please explain it to me? ]",
+                        24
+                    ],
+                    [
+                        "[ Nevermind. You said something about leaving?]",
+                        25
+                    ],
+                    [
+                        "[ Nevermind. What is this place by the way? ]",
+                        35
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ It seems like I was mistaken about you ] She says in a sorrowful tone. She fades into nothingness. The crypt around you fades, the mist lightens. You are left alone in desolation",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "[ You can't have forgotten it.. unless.... I guess I was wrong about you then. Maybe there really are none left ] She fades into nothingness. The crypt around you fades, the mist lightens. You are left alone in desolation",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "[ Yes! Leaving! I'm sure you've been desperate to leave this god forsaken spire as well. I have a speculation, at the top, lies the heart of the spire. I'm sure you could reverse the effects of the ruination there. But that might be a bit hopeful. At anyrate, I'm sure theres a way to leave there ]",
+                [
+                    "[ What is this place by the way? ]",
+                    26
+                ],
+                [
+                    "Let her continue speaking",
+                    28
+                ]
+            ],
+            [
+                "Text",
+                "[ This place, you can't have forgotten it could you? It's the Recollection Shrine ] She eyes you in disbelief",
+                [
+                    [
+                        "[ Of course I remember it, it just looks a bit different from memory ]",
+                        27
+                    ],
+                    [
+                        "[ I've never been here ]",
+                        23
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ This place probably looks different from how you remember it. The years have really worn it down ]",
+                [
+                    [
+                        "[ Why don't you go and leave yourself, if you know a solution? ]",
+                        28
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ I would go to the top myself but sadly I am chained to this shrine. Attempting to leave brings forth a power beyond my comprehension that drags me back here. It feels like an ache, tugging at my very soul ]",
+                [
+                    [
+                        "Let her keep speaking",
+                        29
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ Which is why, I need you to reach to top for me. Though hmm, looking at you, you don't seem to be in shape. You're lacking a fire within you. Perhaps it got extinguished during the Ruination ]",
+                [
+                    [
+                        "[ Fire? ]",
+                        30
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ Yes yes, fire ] She says distractedly as she circles around you, examining you. [ The flame of all of us. It gives you strength ]. She pauses and waves her hands around in a ritualistic motion. The winds come in forming into the familiar purple light. It gathers in her hands and she pushes it in you. You feel its pulse, like a living entity. You feel revived.",
+                "EndPass"
+            ],
+            [
+                "Text",
+                "The Jawworm eats you alive, forcing you to flee",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "The shrine servant slices you, forcing you to run. As you run, the crypt vanishes without a trace",
+                "EndFail"
+            ],
+            [
+                "Text",
+                "[ This place, you can't have forgotten it could you? It's the Recollection Shrine ] She eyes you in disbelief",
+                [
+                    [
+                        "[ Of course I remember it, it just looks a bit different from memory ]",
+                        34
+                    ],
+                    [
+                        "[ I've never been here ]",
+                        23
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ This place probably looks different from how you remember it. The years have really worn it down. Anyways, I have a speculation that at the top, lies the heart of the spire. I'm sure you could reverse the effects of the ruination there. But that might be a bit hopeful. At anyrate, I'm sure theres a way to leave there ]",
+                [
+                    [
+                        "[ Why don't you go and leave yourself, if you know a solution? ]",
+                        28
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ This place, you can't have forgotten it could you? It's the Recollection Shrine ] She eyes you in disbelief",
+                [
+                    [
+                        "[ Of course I remember it, it just looks a bit different from memory ]",
+                        36
+                    ],
+                    [
+                        "[ I've never been here ]",
+                        23
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ This place probably looks different from how you remember it. The years have really worn it down with the Ruination and all. Anyways, I have a speculation that at the top, lies the heart of the spire. I'm sure you could reverse the effects of the ruination there. But that might be a bit hopeful. At anyrate, I'm sure theres a way to leave there ]",
+                [
+                    [
+                        "[ Why don't you go and leave yourself, if you know a solution? ]",
+                        28
+                    ],
+                    [
+                        "[ What's the Ruination? ]",
+                        37
+                    ]
+                ]
+            ],
+            [
+                "Text",
+                "[ You mean you don't know it? ] She says with an edge to her voice",
+                [
+                    [
+                        "Press on about the Ruination",
+                        23
+                    ],
+                    [
+                        "[ I don't really remember much, can you please explain it to me? ]",
+                        24
+                    ],
+                    [
+                        "[ Nevermind. You said something about leaving?]",
+                        25
+                    ]
+                ]
+            ]
+            
+
+        ],
+        "EnemyList": [
+            {
+                "Name": "Jawworm",
+                "Id": 1,
+                "Description": "A primitive creature that is found in the lower levels of the spire. It is a worm that is consistested of mostly a mouth. Razor sharp teeth line its jaws as it gnaws its way towards flesh. It lives underground, burrowing underneath the floor and crawling to its next prey.",
+                "Level": 1,
+                "Health": [
+                    0,
+                    10
+                ],
+                "Energy": 5,
+                "Floor": [
+                    1,
+                    2
+                ],
+                "Armor_Class": [
+                    6,
+                    6
+                ],
+                "Magic_Defense": [
+                    1,
+                    1
+                ],
+                "Weapon": 2,
+                "Speed": [
+                    4,
+                    7
+                ],
+                "Perception": [
+                    15,
+                    30
+                ],
+                "Attacks": [
+                    5
+                ],
+                "Drop_Table": [
+                    {
+                        "Name": "Sharpened Fangs",
+                        "Id": 1,
+                        "Floor": 1,
+                        "Count": 1,
+                        "Type": "Material",
+                        "Description": "The fangs of a Jawworm. Some people have used it to sharpen their weapons and improve them but other than that, it has little use.",
+                        "Chance": 0.25,
+                        "Physical_Amp": 3,
+                        "Magical_Amp": 0,
+                        "Ethereal_Amp": 2,
+                        "Nodes": 1,
+                        "Status": [
+                
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Servant of Memories",
+                "Id": 2,
+                "Description": "An ethereal ghost like creature that resembles a human. It has been here in the Recollection for what seems like ages, doing its duty, serving the shrine maiden. A deep purple glow envelops them in what seems to be some sort of aura.",
+                "Level": 1,
+                "Health": [
+                    25,
+                    25
+                ],
+                "Energy": 2,
+                "Floor": [
+                    1,
+                    1
+                ],
+                "Armor_Class": [
+                    3,
+                    3
+                ],
+                "Magic_Defense": [
+                    8,
+                    8
+                ],
+                "Weapon": 3,
+                "Speed": [
+                    4,
+                    7
+                ],
+                "Perception": [
+                    50,
+                    60
+                ],
+                "Attacks": [
+                    
+                ],
+                "Drop_Table": [
+                    {
+                        "Name": "Fangs of Eternity",
+                        "Id": 2,
+                        "Floor": 1,
+                        "Count": 1,
+                        "Type": "Material",
+                        "Description": "Shards of the cloak that the Servant of Memories wear. It feels... familier but you can't put a finger on it",
+                        "Chance": 0.15,
+                        "Physical_Amp": -1.3,
+                        "Magical_Amp": 0.1,
+                        "Ethereal_Amp": 4,
+                        "Nodes": 1,
+                        "Status": [
+                
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Recollection Shrine Maiden",
+                "Id": 3,
+                "Description": "An inhuman wraith, the guardian of one of the lesser shrines in the spire. Serving the Recollection shrine, she has been here for longer than you can possibly imagine",
+                "Level": 1,
+                "Health": [
+                    75,
+                    75
+                ],
+                "Energy": 5,
+                "Floor": [
+                    1,
+                    1
+                ],
+                "Armor_Class": [
+                    3,
+                    3
+                ],
+                "Magic_Defense": [
+                    15,
+                    15
+                ],
+                "Weapon": 3,
+                "Speed": [
+                    6,
+                    6
+                ],
+                "Perception": [
+                    80,
+                    80
+                ],
+                "Attacks": [
+                    7
+                ],
+                "Drop_Table": [
+                ]
+            }
+        ],
+        "EndMessage": "Quest Complete! Pick your class wisely. You won't be able to switch until later on!"
     
     }
 ]
