@@ -20,7 +20,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.2.2"
+var botVersion = "0.2.3"
 
 var playerTemplate = {
     Health: 100,
@@ -603,6 +603,7 @@ bot.on("message", async (message) => {
                                         message.channel.send(finalMessage)
                                         const filter = m => m.author.id === message.author.id
                                         message.channel.awaitMessages(filter, {max: 1, time: 7000}).then(collected => {
+                                            try {
                                             if(collected.first().content === `${prefix}yes` || collected.first().content === `${prefix}y`) {
                                                 for (let i = 0; i < duelObjects.length; i++) {
                                                     if (duelObjects[i].PlayerId == message.author.id) {
@@ -617,6 +618,10 @@ bot.on("message", async (message) => {
                                             }
                                             if(collected.first().content === `${prefix}no`|| collected.first().content === `${prefix}n`) {
                                                 return message.channel.send("```css\nYou have cancelled the attack " + attacks[weapons[data.Weapon.Id].Attacks[messageArray[2]-1]].Name + "```")
+                                            }
+                                            }
+                                            catch (err) {
+                                                message.channel.send("```css\nYour time is up```")
                                             }
                                         })
                                     }
