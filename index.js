@@ -20,7 +20,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.2.1"
+var botVersion = "0.2.2"
 
 var playerTemplate = {
     Health: 100,
@@ -1200,7 +1200,10 @@ database.once('value').then(function (snapshot) {
                     }
                     while (duelObjects[i].EnemyEnergy >= Math.min.apply(null, availableEnergyAttacks)) {
                         let r = Math.random()
-                        if (r < 0.6) {
+                        if (enemies[duelObjects[i].Enemy].Attacks.length == 0) {
+                            r = 0
+                        }
+                        else if (r < 0.6) {
                             finalMessage += enemyWeaponAttack(message.author.id, "full")
                         }
                         else {
@@ -1396,7 +1399,10 @@ database.once('value').then(function (snapshot) {
                     }
                     while (duelObjects[i].EnemyEnergy >= Math.min.apply(null, availableEnergyAttacks)) {
                         let r = Math.random()
-                        if (r < 0.6) {
+                        if (enemies[duelObjects[i].Enemy].Attacks.length == 0) {
+                            r = 0
+                        }
+                        else if (r < 0.6) {
                             finalMessage += enemyWeaponAttack(message.author.id, "short")
                         }
                         else {
@@ -1519,6 +1525,11 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                 if (questObjects[i].PlayerId == playerId) {
                     let selectQuest = questObjects[i].Quest
                     if (status == "Continue") {
+                        for (let l = 0; l < duelObjects.length; l++) {
+                            if (duelObjects[l].PlayerId == playerId) {
+                                duelObjects.splice(l)
+                            }
+                        }
                         questObjects[i].QuestPosition = selectQuest.Script[questObjects[i].QuestPosition][2]
                         if (typeof selectQuest.Script[questObjects[i].QuestPosition][2] == "string") {
                             if (selectQuest.Script[questObjects[i].QuestPosition][2] == "End") {
@@ -1578,6 +1589,11 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                         }
                     }
                     else if (status == "Fail") {
+                        for (let l = 0; l < duelObjects.length; l++) {
+                            if (duelObjects[l].PlayerId == playerId) {
+                                duelObjects.splice(l)
+                            }
+                        }
                         questObjects[i].QuestPosition = selectQuest.Script[questObjects[i].QuestPosition][3]
                         if (selectQuest.Script[questObjects[i].QuestPosition][2] === "End") {
                             finalMessage = "```css\n"
@@ -1819,7 +1835,6 @@ function enemyEnemyAttack(playerId, param) {
                 var availableEnemyAttacks = enemies[duelObjects[i].Enemy].Attacks
                 let chosenAttack = attacks[availableEnemyAttacks[Math.floor(Math.random() * availableEnemyAttacks.length)]]
                 let damage = 0;
-                console.log(enemy)
                 finalMessage += enemy.Name + " used [ " + chosenAttack.Name + " ]\n"
                 finalMessage += "   " + enemy.Name + " tried to do [ " + Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)) + " ] physical damage\n"
                 damage += calculateResistences(Math.round(weapons[enemy.Weapon].Physical * chosenAttack.Physical_Ratio * (enemyLevel * 0.7)), duelObjects[i].PlayerArmorClass)

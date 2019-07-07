@@ -662,8 +662,8 @@
                 "Description": "An inhuman wraith, the guardian of one of the lesser shrines in the spire. Serving the Recollection shrine, she has been here for longer than you can possibly imagine",
                 "Level": 1,
                 "Health": [
-                    75,
-                    75
+                    15,
+                    15
                 ],
                 "Energy": 5,
                 "Floor": [
@@ -694,7 +694,7 @@
                 ]
             }
         ],
-        "EndMessage": "Quest Complete! Pick your class wisely. You won't be able to switch until later on!"
+        "EndMessage": "Quest Complete! Pick your class wisely. You won't be able to switch until later on!\nYou have unlocked the [ Recollection Shrine ] location!"
     
     }
 ]

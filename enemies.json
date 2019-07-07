@@ -182,8 +182,8 @@
         "Description": "An inhuman wraith, the guardian of one of the lesser shrines in the spire. Serving the Recollection shrine, she has been here for longer than you can possibly imagine",
         "Level": 1,
         "Health": [
-            1,
-            1
+            15,
+            15
         ],
         "Energy": 5,
         "Floor": [
