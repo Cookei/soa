@@ -13,6 +13,7 @@ const enemies = require("./enemies.json")
 const quests = require("./quests.json")
 const materials = require("./materials.json")
 const floors = require("./floors.json")
+const locations = require("./locations.json")
 var duelObjects = [
 
 ]
@@ -20,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.2.3"
+var botVersion = "0.2.5"
 
 var playerTemplate = {
     Health: 100,
@@ -47,7 +48,10 @@ var playerTemplate = {
 
     ],
     Version: botVersion,
-    Floor: 1
+    Floor: 1,
+    Locations: [
+
+    ]
 }
 
 var config = {
@@ -408,10 +412,10 @@ bot.on("message", async (message) => {
             finalMessage += "   Ethereal: " + temp.Weapon.Ethereal + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "Armor: Will Add Later\n"
-            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + "]\n"
-            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + "]\n"
-            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + "]\n"
-            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + "]\n"
+            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + " ]\n"
+            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + " ]\n"
+            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + " ]\n"
+            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + " ]\n"
             finalMessage += "```"
             message.channel.send(finalMessage)
     })
@@ -478,10 +482,10 @@ bot.on("message", async (message) => {
             finalMessage += "   Ethereal: " + temp.Weapon.Ethereal + "\n"
             finalMessage += "----------------------------------------------\n"
             finalMessage += "Armor: Will Add Later\n"
-            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + "]\n"
-            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + "]\n"
-            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + "]\n"
-            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + "]\n"
+            finalMessage += "[ Armor Class: " + tempMessage.Armor_Class + " ]\n"
+            finalMessage += "[ Magic Defense: " + tempMessage.Magic_Defense + " ]\n"
+            finalMessage += "[ Physical Amp: " + tempMessage.Physical_Amp + " ]\n"
+            finalMessage += "[ Magic Amp: " + tempMessage.Magic_Amp + " ]\n"
             finalMessage += "```"
             message.channel.send(finalMessage)
     })
@@ -822,6 +826,15 @@ bot.on("message", async (message) => {
     else if (cmd == `${prefix}inventory` || cmd == `${prefix}inv`) {
         let database = firebase.database().ref("Players/" + message.author.id + "/" + "Inventory")
         database.once('value').then(function(snapshot) {
+            checkAccount(message.author.id, function(param) {
+                if (param) {
+
+                }
+                else {
+                    message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
+                    return
+                }
+            })
             let value = snapshot.val()
             if (value != null) {
                 if (value.length != 0) {
@@ -876,6 +889,49 @@ bot.on("message", async (message) => {
     }
     else if (cmd == `${prefix}quest`) {
         initQuest(1, message.author.id, message.channel, "Start")
+    }
+    else if (cmd == `${prefix}locations`) {
+        let database = firebase.database().ref("Players/" + message.author.id + "/Locations")
+        database.once('value').then(function(snapshot) {
+            let value = snapshot.val()
+            if (value != null) {
+                let finalMessage = "__**Unlocked Locations**__ 0/" + locations.length + "\n"
+                finalMessage += "```css\n"
+                let unlockedLocations = [
+
+                ]
+                for (let i = 0; i < value.length; i++) {
+                    unlockedLocations.push(value[i].Id)
+                }
+                for (let i = 0; i < locations.length; i++) {
+                    for (let j = 0; j < unlockedLocations.length; j++) {
+                        if (locations[i].Id == unlockedLocations) {
+                            finalMessage += locations[i].Id + " - " + locations[i].Name + "\n"
+                        }
+                        else {
+                            finalMessage += "[ " + locations[i].Id + " - " + locations[i].Name + " ]\n"
+                        }
+                    }
+                }
+                finalMessage += "```"
+                message.channel.send(finalMessage)
+            }
+            else {
+                let finalMessage = "__**Unlocked Locations**__ 0/" + locations.length + "\n"
+                finalMessage += "```css\n"
+                for (let i = 0; i < locations.length; i++) {
+                    finalMessage += "[ " + locations[i].Id + " - " + locations[i].Name + " ]\n"
+                }
+                finalMessage += "```"
+                message.channel.send(finalMessage)
+            }
+        })
+    }
+    else if (cmd == `${prefix}push`) {
+        let database = firebase.database().ref("Players/" + message.author.id + "/Locations")
+        database.once('value').then(function(snapshot) {
+            database.update([locations[0]])
+        })
     }
 
 })

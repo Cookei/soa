@@ -140,8 +140,8 @@
                 ]
             }
         ],
-        "EndMessage": "Quest Complete! Use the venture command to continue to progress!"
-    
+        "EndMessage": "Quest Complete! Use the venture command to continue to progress!",
+        "Special": "None"
     },
     {
         "QuestName": "Semblence of Past",
@@ -694,7 +694,7 @@
                 ]
             }
         ],
-        "EndMessage": "Quest Complete! Pick your class wisely. You won't be able to switch until later on!\nYou have unlocked the [ Recollection Shrine ] location!"
-    
+        "EndMessage": "Quest Complete! Pick your class wisely. You won't be able to switch until later on!\nYou have unlocked the [ Recollection Shrine ] location!",
+        "Special": "Class Unlock"
     }
 ]
