@@ -21,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.2.5"
+var botVersion = "0.2.5.1"
 
 var playerTemplate = {
     Health: 100,
@@ -895,14 +895,14 @@ bot.on("message", async (message) => {
         database.once('value').then(function(snapshot) {
             let value = snapshot.val()
             if (value != null) {
-                let finalMessage = "__**Unlocked Locations**__ 0/" + locations.length + "\n"
-                finalMessage += "```css\n"
                 let unlockedLocations = [
 
                 ]
                 for (let i = 0; i < value.length; i++) {
                     unlockedLocations.push(value[i].Id)
                 }
+                let finalMessage = "__**Unlocked Locations**__ " + unlockedLocations.length + "/" + locations.length + "\n"
+                finalMessage += "```css\n"
                 for (let i = 0; i < locations.length; i++) {
                     for (let j = 0; j < unlockedLocations.length; j++) {
                         if (locations[i].Id == unlockedLocations) {
