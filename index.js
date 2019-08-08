@@ -21,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.2.5.1"
+var botVersion = "0.3.2"
 
 var playerTemplate = {
     Health: 100,
@@ -502,38 +502,104 @@ bot.on("message", async (message) => {
             })
         }
     }
-    else if (cmd == `${prefix}duel`) {
+    // else if (cmd == `${prefix}duel`) {
+    //     checkAccount(message.author.id, function(param) {
+    //         if (param == true) {
+    //             if (messageArray[1] > enemies.length) {
+    //                 message.channel.send("`That Enemy Does Not Exist`")
+    //                 return
+    //             }
+    //             let database = firebase.database().ref("Players/" + message.author.id)
+    //             database.once('value').then(function(snapshot) {
+    //                     let value = snapshot.val()
+    //                 if (value.InDuel == false) {
+    //                     let finalMessage = ""
+    //                     let enemy = enemies[messageArray[1]-1]
+    //                     if (isNaN(messageArray[1])) {
+    //                         finalMessage = "`An ERROR has occured. You must put the ID number in the parameter`"
+    //                         message.channel.send(finalMessage)
+    //                         return
+    //                     }
+    //                     else {
+    //                         // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
+    //                         let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
+    //                         if (enemyLevel < 1) {
+    //                             enemyLevel = 1
+    //                         }
+    //                         initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
+    //                             message.channel.send(finalMessage)
+    //                         })
+    //                     }
+    //                 }
+    //                 else {
+    //                     message.channel.send("`You are already in combat`")
+    //                     return
+    //                 }
+    //             })
+    //         }
+    //         else {
+    //             message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
+    //             return
+    //         }
+    //     })
+        
+    // }
+    else if (cmd == `${prefix}venture`) {
         checkAccount(message.author.id, function(param) {
-            if (param == true) {
-                if (messageArray[1] > enemies.length) {
-                    message.channel.send("`That Enemy Does Not Exist`")
-                    return
-                }
+            if (param) {
                 let database = firebase.database().ref("Players/" + message.author.id)
                 database.once('value').then(function(snapshot) {
-                        let value = snapshot.val()
-                    if (value.InDuel == false) {
-                        let finalMessage = ""
-                        let enemy = enemies[messageArray[1]-1]
-                        if (isNaN(messageArray[1])) {
-                            finalMessage = "`An ERROR has occured. You must put the ID number in the parameter`"
-                            message.channel.send(finalMessage)
-                            return
+                    let value = snapshot.val()
+                    if (messageArray[1]) {
+                        if (!isNaN(messageArray[1])) {
+                            if (messageArray[1] > locations[value.Floor - 1].length - 1 || messageArray[1] < 0) {
+                                message.channel.send("`That location does not exist`")
+                            }
+                            else {
+                                let unlockedLocations = [
+
+                                ]
+                                for (let i = 0; i < value.Locations.length; i++) {
+                                    unlockedLocations.push(value.Locations[i].Id)
+                                }
+                                if (unlockedLocations.includes(messageArray[1] * 1)) {
+                                    initQuest(locations[value.Floor - 1][messageArray[1]].Quest, message.author.id, message.channel, "Start")
+                                }
+                                else {
+                                    message.channel.send(`You have not unlocked that location`)
+                                }
+                            }
                         }
                         else {
-                            // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
-                            let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
-                            if (enemyLevel < 1) {
-                                enemyLevel = 1
-                            }
-                            initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
-                                message.channel.send(finalMessage)
-                            })
+                            message.channel.send("`That location does not exist`")
                         }
                     }
                     else {
-                        message.channel.send("`You are already in combat`")
-                        return
+                        if (value.InDuel == false && value.InQuest == false) {
+                            let floorEnemies = [
+
+                            ]
+                            for (let i = 0; i < enemies.length; i++) {
+                                if (enemies[i].Floor[0] <= value.Floor && enemies[i].Floor[1] >= value.Floor) {
+                                    if (enemies[i].Special == "False") {
+                                        floorEnemies.push(i)
+                                    }
+                                }
+                            }
+                            let enemy = enemies[Math.round(Math.random() * floorEnemies.length)]
+                                // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
+                                let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
+                                if (enemyLevel < 1) {
+                                    enemyLevel = 1
+                                }
+                                initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
+                                    message.channel.send(finalMessage)
+                                })
+                            }
+                        else {
+                            message.channel.send("`You are already in combat or are in a quest`")
+                            return
+                        }
                     }
                 })
             }
@@ -542,7 +608,6 @@ bot.on("message", async (message) => {
                 return
             }
         })
-        
     }
     else if (cmd == `${prefix}use`) {
         if (messageArray[1]) {
@@ -740,12 +805,13 @@ bot.on("message", async (message) => {
                 let database = firebase.database().ref("Players/" + message.author.id)
                 database.once('value').then(function(snapshot) {
                     let val = snapshot.val() 
-                    if (val.InDuel == false) {
-                        message.channel.send("`You are not in a duel`")
+                    if (val.InDuel == false && val.InQuest == false) {
+                        message.channel.send("`You are not in a duel or quest`")
                     }
                     else {
                         value = {
-                            InDuel: false
+                            InDuel: false,
+                            InQuest: false
                         }
                         database.update(value)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -753,7 +819,12 @@ bot.on("message", async (message) => {
                                 duelObjects.splice(i)
                             }
                         }
-                        message.channel.send("```css\nYou have fled from battle\n```")
+                        for (let i = 0; i < questObjects.length; i++) {
+                            if (questObjects[i].PlayerId == message.author.id) {
+                                questObjects.splice(i)
+                            }
+                        }
+                        message.channel.send("```css\nYou have fled from an encounter\n```")
                     }
                 })
             }
@@ -891,25 +962,25 @@ bot.on("message", async (message) => {
         initQuest(1, message.author.id, message.channel, "Start")
     }
     else if (cmd == `${prefix}locations`) {
-        let database = firebase.database().ref("Players/" + message.author.id + "/Locations")
+        let database = firebase.database().ref("Players/" + message.author.id)
         database.once('value').then(function(snapshot) {
             let value = snapshot.val()
-            if (value != null) {
+            if (value.Locations != null) {
                 let unlockedLocations = [
 
                 ]
-                for (let i = 0; i < value.length; i++) {
-                    unlockedLocations.push(value[i].Id)
+                for (let i = 0; i < value.Locations.length; i++) {
+                    unlockedLocations.push(value.Locations[i].Id)
                 }
-                let finalMessage = "__**Unlocked Locations**__ " + unlockedLocations.length + "/" + locations.length + "\n"
+                let finalMessage = "__**Unlocked Locations**__ Floor: " + value.Floor + " - " + unlockedLocations.length + "/" + locations[value.Floor - 1].length + "\n"
                 finalMessage += "```css\n"
-                for (let i = 0; i < locations.length; i++) {
+                for (let i = 0; i < locations[value.Floor - 1].length; i++) {
                     for (let j = 0; j < unlockedLocations.length; j++) {
-                        if (locations[i].Id == unlockedLocations) {
-                            finalMessage += locations[i].Id + " - " + locations[i].Name + "\n"
+                        if (locations[value.Floor - 1][i].Id == unlockedLocations) {
+                            finalMessage += locations[value.Floor - 1][i].Id + " - " + locations[value.Floor - 1][i].Name + "\n"
                         }
                         else {
-                            finalMessage += "[ " + locations[i].Id + " - " + locations[i].Name + " ]\n"
+                            finalMessage += "[ " + locations[value.Floor - 1][i].Id + " - " + locations[value.Floor - 1][i].Name + " ]\n"
                         }
                     }
                 }
@@ -917,10 +988,10 @@ bot.on("message", async (message) => {
                 message.channel.send(finalMessage)
             }
             else {
-                let finalMessage = "__**Unlocked Locations**__ 0/" + locations.length + "\n"
+                let finalMessage = "__**Unlocked Locations**__ 0/" + locations[value.Floor - 1].length + "\n"
                 finalMessage += "```css\n"
-                for (let i = 0; i < locations.length; i++) {
-                    finalMessage += "[ " + locations[i].Id + " - " + locations[i].Name + " ]\n"
+                for (let i = 0; i < locations[value.Floor - 1].length; i++) {
+                    finalMessage += "[ " + locations[value.Floor - 1][i].Id + " - " + locations[value.Floor - 1][i].Name + " ]\n"
                 }
                 finalMessage += "```"
                 message.channel.send(finalMessage)
@@ -930,7 +1001,7 @@ bot.on("message", async (message) => {
     else if (cmd == `${prefix}push`) {
         let database = firebase.database().ref("Players/" + message.author.id + "/Locations")
         database.once('value').then(function(snapshot) {
-            database.update([locations[0]])
+            database.update([locations[0][0]])
         })
     }
 

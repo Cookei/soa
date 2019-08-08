@@ -91,6 +91,7 @@
                 "Id": 0,
                 "Description": "A beast on the lower levels of the spire. It is unknown to how they got this corruption on them. The corruption rots away at it's skin and with every move more and more of it's flesh get torn off. It is a hulking monstrocity, crawling on all fours. A large mouth snarls at everything it sees.",
                 "Level": 1,
+                "Special": "True",
                 "Health": [
                     0,
                     20
@@ -555,6 +556,7 @@
                 "Id": 1,
                 "Description": "A primitive creature that is found in the lower levels of the spire. It is a worm that is consistested of mostly a mouth. Razor sharp teeth line its jaws as it gnaws its way towards flesh. It lives underground, burrowing underneath the floor and crawling to its next prey.",
                 "Level": 1,
+                "Special": "True",
                 "Health": [
                     0,
                     10
@@ -608,6 +610,7 @@
                 "Id": 2,
                 "Description": "An ethereal ghost like creature that resembles a human. It has been here in the Recollection for what seems like ages, doing its duty, serving the shrine maiden. A deep purple glow envelops them in what seems to be some sort of aura.",
                 "Level": 1,
+                "Special": "True",
                 "Health": [
                     25,
                     25
@@ -661,6 +664,7 @@
                 "Id": 3,
                 "Description": "An inhuman wraith, the guardian of one of the lesser shrines in the spire. Serving the Recollection shrine, she has been here for longer than you can possibly imagine",
                 "Level": 1,
+                "Special": "True",
                 "Health": [
                     15,
                     15
