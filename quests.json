@@ -410,12 +410,14 @@
                 "Text",
                 "[ Yes! Leaving! I'm sure you've been desperate to leave this god forsaken spire as well. I have a speculation, at the top, lies the heart of the spire. I'm sure you could reverse the effects of the ruination there. But that might be a bit hopeful. At anyrate, I'm sure theres a way to leave there ]",
                 [
-                    "[ What is this place by the way? ]",
-                    26
-                ],
-                [
-                    "Let her continue speaking",
-                    28
+                    [
+                        "[ What is this place by the way? ]",
+                        26
+                    ],
+                    [
+                        "Let her continue speaking",
+                        28
+                    ]
                 ]
             ],
             [

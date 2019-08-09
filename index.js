@@ -21,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.3.2"
+var botVersion = "0.3.3"
 
 var playerTemplate = {
     Health: 100,
@@ -502,48 +502,53 @@ bot.on("message", async (message) => {
             })
         }
     }
-    // else if (cmd == `${prefix}duel`) {
-    //     checkAccount(message.author.id, function(param) {
-    //         if (param == true) {
-    //             if (messageArray[1] > enemies.length) {
-    //                 message.channel.send("`That Enemy Does Not Exist`")
-    //                 return
-    //             }
-    //             let database = firebase.database().ref("Players/" + message.author.id)
-    //             database.once('value').then(function(snapshot) {
-    //                     let value = snapshot.val()
-    //                 if (value.InDuel == false) {
-    //                     let finalMessage = ""
-    //                     let enemy = enemies[messageArray[1]-1]
-    //                     if (isNaN(messageArray[1])) {
-    //                         finalMessage = "`An ERROR has occured. You must put the ID number in the parameter`"
-    //                         message.channel.send(finalMessage)
-    //                         return
-    //                     }
-    //                     else {
-    //                         // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
-    //                         let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
-    //                         if (enemyLevel < 1) {
-    //                             enemyLevel = 1
-    //                         }
-    //                         initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
-    //                             message.channel.send(finalMessage)
-    //                         })
-    //                     }
-    //                 }
-    //                 else {
-    //                     message.channel.send("`You are already in combat`")
-    //                     return
-    //                 }
-    //             })
-    //         }
-    //         else {
-    //             message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
-    //             return
-    //         }
-    //     })
-        
-    // }
+    else if (cmd == `${prefix}duel`) {
+        if (message.author.id == 226809073843175434) {
+            checkAccount(message.author.id, function(param) {
+                if (param == true) {
+                    if (messageArray[1] > enemies.length) {
+                        message.channel.send("`That Enemy Does Not Exist`")
+                        return
+                    }
+                    let database = firebase.database().ref("Players/" + message.author.id)
+                    database.once('value').then(function(snapshot) {
+                            let value = snapshot.val()
+                        if (value.InDuel == false) {
+                            let finalMessage = ""
+                            let enemy = enemies[messageArray[1]-1]
+                            if (isNaN(messageArray[1])) {
+                                finalMessage = "`An ERROR has occured. You must put the ID number in the parameter`"
+                                message.channel.send(finalMessage)
+                                return
+                            }
+                            else {
+                                // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
+                                let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
+                                if (enemyLevel < 1) {
+                                    enemyLevel = 1
+                                }
+                                initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
+                                    message.channel.send(finalMessage)
+                                })
+                            }
+                        }
+                        else {
+                            message.channel.send("`You are already in combat`")
+                            return
+                        }
+                    })
+                }
+                else {
+                    message.channel.send("```\nYou do not exist yet in this tower\nCreate an account using ]create```")
+                    return
+                }
+            })
+            
+        }
+        else {
+            message.channel.send("`You are not the creator`")
+        }
+    }
     else if (cmd == `${prefix}venture`) {
         checkAccount(message.author.id, function(param) {
             if (param) {
@@ -576,26 +581,79 @@ bot.on("message", async (message) => {
                     }
                     else {
                         if (value.InDuel == false && value.InQuest == false) {
-                            let floorEnemies = [
-
+                            let percentileChances = [
+    
                             ]
-                            for (let i = 0; i < enemies.length; i++) {
-                                if (enemies[i].Floor[0] <= value.Floor && enemies[i].Floor[1] >= value.Floor) {
-                                    if (enemies[i].Special == "False") {
-                                        floorEnemies.push(i)
+                            if (value.Locations != null) {
+                                let unlockedLocations = [
+
+                                ]
+                                for (let i = 0; i < value.Locations.length; i++) {
+                                    unlockedLocations.push(value.Locations[i].Id)
+                                }
+                                let totalLocations = [
+    
+                                ]
+                                for (let i = 0; i < locations[value.Floor - 1].length; i++) {
+                                    totalLocations.push(locations[value.Floor -1][i].Id)
+                                }
+                                for (let i = 0; i < unlockedLocations.length;  i++) {
+                                    let index = totalLocations.indexOf(unlockedLocations[i])
+                                    if (index > -1) {
+                                        totalLocations.splice(index, 1)
+                                    }
+                                }
+    
+                                let r = Math.random()
+                                for (let i = 0; i < locations[value.Floor - 1].length; i++) {
+                                    for (let j = 0; j < totalLocations.length; j++) {
+                                        if (locations[value.Floor - 1][i].Id == totalLocations[j]) {
+                                            if (r <= locations[value.Floor - 1][i].Chance) {
+                                                percentileChances.push([
+                                                    locations[value.Floor - 1][i].Chance,
+                                                    locations[value.Floor - 1][i].Id
+                                                ])
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            let enemy = enemies[Math.round(Math.random() * floorEnemies.length)]
-                                // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
-                                let enemyLevel = Math.round(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
-                                if (enemyLevel < 1) {
-                                    enemyLevel = 1
+                            else {
+                                let r = Math.random()
+                                for (let i = 0; i < locations[value.Floor - 1].length; i++) {
+                                    if (r <= locations[value.Floor - 1][i].Chance) {
+                                        percentileChances.push([
+                                            locations[value.Floor - 1][i].Chance,
+                                            locations[value.Floor - 1][i].Id
+                                        ])
+                                    }
                                 }
-                                initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
-                                    message.channel.send(finalMessage)
-                                })
                             }
+                            if (percentileChances.length != 0) {
+                                initQuest(locations[value.Floor - 1][percentileChances[Math.floor(Math.random() * percentileChances.length)][1]].Quest, message.author.id, message.channel, "Start")
+                            }
+                            else {
+                                let floorEnemies = [
+
+                                ]
+                                for (let i = 0; i < enemies.length; i++) {
+                                    if (enemies[i].Floor[0] <= value.Floor && enemies[i].Floor[1] >= value.Floor) {
+                                        if (enemies[i].Special == "False") {
+                                            floorEnemies.push(i)
+                                        }
+                                    }
+                                }
+                                let enemy = enemies[Math.floor(Math.random() * floorEnemies.length)]
+                                    // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
+                                    let enemyLevel = Math.floor(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
+                                    if (enemyLevel < 1) {
+                                        enemyLevel = 1
+                                    }
+                                    initDuel(enemy, message.author.id, enemyLevel, function(finalMessage) {
+                                        message.channel.send(finalMessage)
+                                    })
+                            }
+                        }
                         else {
                             message.channel.send("`You are already in combat or are in a quest`")
                             return
@@ -1335,7 +1393,7 @@ database.once('value').then(function (snapshot) {
                         if (enemies[duelObjects[i].Enemy].Attacks.length == 0) {
                             r = 0
                         }
-                        else if (r < 0.6) {
+                        if (r < 0.6) {
                             finalMessage += enemyWeaponAttack(message.author.id, "full")
                         }
                         else {
@@ -1534,7 +1592,7 @@ database.once('value').then(function (snapshot) {
                         if (enemies[duelObjects[i].Enemy].Attacks.length == 0) {
                             r = 0
                         }
-                        else if (r < 0.6) {
+                        if (r < 0.6) {
                             finalMessage += enemyWeaponAttack(message.author.id, "short")
                         }
                         else {
@@ -1676,6 +1734,10 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                 database.update(update)
                             }
                             else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndFail") {
+                                finalMessage = "```css\n"
+                                finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
+                                finalMessage += "```"
+                                messageChannel.send(finalMessage)
                                 finalMessage = "```css\n"
                                 finalMessage += "You have [failed] this quest" + "\n"
                                 finalMessage += "```"
