@@ -191,8 +191,8 @@
         ],
         "Energy": 5,
         "Floor": [
-            10,
-            10
+            1,
+            1
         ],
         "Armor_Class": [
             3,
@@ -201,6 +201,44 @@
         "Magic_Defense": [
             15,
             15
+        ],
+        "Weapon": 3,
+        "Speed": [
+            6,
+            6
+        ],
+        "Perception": [
+            80,
+            80
+        ],
+        "Attacks": [
+            7
+        ],
+        "Drop_Table": [
+        ]
+    },
+    {
+        "Name": "Stone Serpant",
+        "Id": 4,
+        "Description": "A snake like creature that wanderes the bottom layer of the spire. This stone stone monstrocity is said to relentlessly pursue its prey, unto death",
+        "Level": 1,
+        "Special": "False",
+        "Health": [
+            17,
+            23
+        ],
+        "Energy": 3,
+        "Floor": [
+            1,
+            1
+        ],
+        "Armor_Class": [
+            15,
+            20
+        ],
+        "Magic_Defense": [
+            2,
+            5
         ],
         "Weapon": 3,
         "Speed": [

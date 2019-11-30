@@ -21,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.3.4"
+var botVersion = "0.3.5"
 
 var playerTemplate = {
     Health: 100,
@@ -1798,53 +1798,18 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                             }
                             else if (selectQuest.Script[questObjects[i].QuestPosition][2] === "EndPass") {
                                 finalMessage = "```css\n"
-                                finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
-                                finalMessage += "```"
-                                messageChannel.send(finalMessage)
-                                if (selectQuest.Locations != "None") {
-                                    if (value.Locations == null) {
-                                        let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                        newRef.update(selectQuest.Locations[value.Floor - 1])
-                                    }
-                                    else if (value.Locations[value.Floor - 1] == null) {
-                                        let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                        newRef.update(selectQuest.Locations[value.Floor - 1])
-                                    }
-                                    else {
-                                        let unlockedLocations = value.Locations[value.Floor - 1]
-                                        let questLocation = selectQuest.Locations[1]
-                                        if (unlockedLocations.includes(questLocation) == false) {
-                                            unlockedLocations.push(questLocation)
-                                            let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                            newRef.update(unlockedLocations)
-                                        }
-                                    }
-                                    ////////////////
-                                    let unlockedLocations = value.Locations[value.Floor - 1]
-                                    if (unlockedLocations.includes(selectQuest.Locations[1]) == false) {
-                                        finalMessage = "```css\n"
-                                        finalMessage += selectQuest.EndMessage + "\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
-                                    }
-                                    else {
-                                        finalMessage = "```css\n"
-                                        finalMessage += "You have already completed this quest and unlocked this location!\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
-                                    }
-                                }
-                                else {
+                            finalMessage += selectQuest.Script[questObjects[i].QuestPosition][1] + "\n"
+                            finalMessage += "```"
+                            messageChannel.send(finalMessage)
+                            if (selectQuest.Locations != "None") {
+                                if (value.Locations == null) {
+                                    let Locations = [
+                                        [
+                                            selectQuest.Locations[value.Floor - 1]
+                                        ]
+                                    ]
+                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
+                                    newRef.update(Locations)
                                     finalMessage = "```css\n"
                                     finalMessage += selectQuest.EndMessage + "\n"
                                     finalMessage += "```"
@@ -1855,6 +1820,53 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                     database.update(update)
                                     questObjects.splice(i)
                                 }
+                                else if (value.Locations[value.Floor - 1] == null) {
+                                    let Locations = [
+                                        [
+                                            selectQuest.Locations[value.Floor - 1]
+                                        ]
+                                    ]
+                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
+                                    newRef.update(Locations)
+                                    finalMessage = "```css\n"
+                                    finalMessage += selectQuest.EndMessage + "\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
+                                    }
+                                    database.update(update)
+                                    questObjects.splice(i)
+                                }
+                                else {
+                                    // let unlockedLocations = value.Locations[value.Floor - 1]
+                                    // let questLocation = selectQuest.Locations[1]
+                                        // unlockedLocations.push(questLocation)
+                                        // let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
+                                        // newRef.update(unlockedLocations)
+                                    finalMessage = "```css\n"
+                                    finalMessage += "You have already completed this quest and unlocked this location!\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
+                                    }
+                                    database.update(update)
+                                    questObjects.splice(i)
+                                }
+                                ////////////////
+                            }
+                            else {
+                                finalMessage = "```css\n"
+                                finalMessage += selectQuest.EndMessage + "\n"
+                                finalMessage += "```"
+                                messageChannel.send(finalMessage)
+                                let update = {
+                                    InQuest: false
+                                }
+                                database.update(update)
+                                questObjects.splice(i)
+                            }
                             }
                         }
                         else if (selectQuest.Script[questObjects[i].QuestPosition][0] == "Battle") {
@@ -1956,25 +1968,31 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                             messageChannel.send(finalMessage)
                             if (selectQuest.Locations != "None") {
                                 if (value.Locations == null) {
-                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                    newRef.update(selectQuest.Locations[value.Floor - 1])
+                                    let Locations = [
+                                        [
+                                            selectQuest.Locations[value.Floor - 1]
+                                        ]
+                                    ]
+                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
+                                    newRef.update(Locations)
+                                    finalMessage = "```css\n"
+                                    finalMessage += selectQuest.EndMessage + "\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
+                                    }
+                                    database.update(update)
+                                    questObjects.splice(i)
                                 }
                                 else if (value.Locations[value.Floor - 1] == null) {
-                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                    newRef.update(selectQuest.Locations[value.Floor - 1])
-                                }
-                                else {
-                                    let unlockedLocations = value.Locations[value.Floor - 1]
-                                    let questLocation = selectQuest.Locations[1]
-                                    if (unlockedLocations.includes(questLocation) == false) {
-                                        unlockedLocations.push(questLocation)
-                                        let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                        newRef.update(unlockedLocations)
-                                    }
-                                }
-                                ////////////////
-                                let unlockedLocations = value.Locations[value.Floor - 1]
-                                if (unlockedLocations.includes(selectQuest.Locations[1]) == false) {
+                                    let Locations = [
+                                        [
+                                            selectQuest.Locations[value.Floor - 1]
+                                        ]
+                                    ]
+                                    let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
+                                    newRef.update(Locations)
                                     finalMessage = "```css\n"
                                     finalMessage += selectQuest.EndMessage + "\n"
                                     finalMessage += "```"
@@ -1986,6 +2004,11 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                     questObjects.splice(i)
                                 }
                                 else {
+                                    // let unlockedLocations = value.Locations[value.Floor - 1]
+                                    // let questLocation = selectQuest.Locations[1]
+                                        // unlockedLocations.push(questLocation)
+                                        // let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
+                                        // newRef.update(unlockedLocations)
                                     finalMessage = "```css\n"
                                     finalMessage += "You have already completed this quest and unlocked this location!\n"
                                     finalMessage += "```"
@@ -1996,6 +2019,7 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                     database.update(update)
                                     questObjects.splice(i)
                                 }
+                                ////////////////
                             }
                             else {
                                 finalMessage = "```css\n"
@@ -2057,29 +2081,15 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                     ]
                                     let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
                                     newRef.update(Locations)
-                                    let unlockedLocations = value.Locations[value.Floor - 1]
-                                    if (unlockedLocations.includes(selectQuest.Locations[1]) == false) {
-                                        finalMessage = "```css\n"
-                                        finalMessage += selectQuest.EndMessage + "\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
+                                    finalMessage = "```css\n"
+                                    finalMessage += selectQuest.EndMessage + "\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
                                     }
-                                    else {
-                                        finalMessage = "```css\n"
-                                        finalMessage += "You have already completed this quest and unlocked this location!\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
-                                    }
+                                    database.update(update)
+                                    questObjects.splice(i)
                                 }
                                 else if (value.Locations[value.Floor - 1] == null) {
                                     let Locations = [
@@ -2089,38 +2099,31 @@ function initQuest(QuestId, playerId, messageChannel, status) {
                                     ]
                                     let newRef = firebase.database().ref("Players/" + playerId + "/Locations")
                                     newRef.update(Locations)
-                                    let unlockedLocations = value.Locations[value.Floor - 1]
-                                    if (unlockedLocations.includes(selectQuest.Locations[1]) == false) {
-                                        finalMessage = "```css\n"
-                                        finalMessage += selectQuest.EndMessage + "\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
+                                    finalMessage = "```css\n"
+                                    finalMessage += selectQuest.EndMessage + "\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
                                     }
-                                    else {
-                                        finalMessage = "```css\n"
-                                        finalMessage += "You have already completed this quest and unlocked this location!\n"
-                                        finalMessage += "```"
-                                        messageChannel.send(finalMessage)
-                                        let update = {
-                                            InQuest: false
-                                        }
-                                        database.update(update)
-                                        questObjects.splice(i)
-                                    }
+                                    database.update(update)
+                                    questObjects.splice(i)
                                 }
                                 else {
-                                    let unlockedLocations = value.Locations[value.Floor - 1]
-                                    let questLocation = selectQuest.Locations[1]
-                                    if (unlockedLocations.includes(questLocation) == false) {
-                                        unlockedLocations.push(questLocation)
-                                        let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
-                                        newRef.update(unlockedLocations)
+                                    // let unlockedLocations = value.Locations[value.Floor - 1]
+                                    // let questLocation = selectQuest.Locations[1]
+                                        // unlockedLocations.push(questLocation)
+                                        // let newRef = firebase.database().ref("Players/" + playerId + "/Locations"[value.Floor - 1])
+                                        // newRef.update(unlockedLocations)
+                                    finalMessage = "```css\n"
+                                    finalMessage += "You have already completed this quest and unlocked this location!\n"
+                                    finalMessage += "```"
+                                    messageChannel.send(finalMessage)
+                                    let update = {
+                                        InQuest: false
                                     }
+                                    database.update(update)
+                                    questObjects.splice(i)
                                 }
                                 ////////////////
                             }
