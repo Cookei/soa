@@ -132,8 +132,8 @@
         "Level": 1,
         "Special": "False",
         "Health": [
-            32,
-            37
+            0,
+            23
         ],
         "Energy": 2,
         "Floor": [
@@ -142,11 +142,11 @@
         ],
         "Armor_Class": [
             2,
-            4
+            3
         ],
         "Magic_Defense": [
             6,
-            10
+            8
         ],
         "Weapon": 3,
         "Speed": [
@@ -220,12 +220,12 @@
     {
         "Name": "Stone Serpant",
         "Id": 4,
-        "Description": "A snake like creature that wanderes the bottom layer of the spire. This stone stone monstrocity is said to relentlessly pursue its prey, unto death",
+        "Description": "A snake like creature that wanderes the bottom layer of the spire. This stone skinned monstrocity is said to relentlessly pursue its prey, unto death",
         "Level": 1,
         "Special": "False",
         "Health": [
-            17,
-            23
+            0,
+            47
         ],
         "Energy": 3,
         "Floor": [
@@ -237,10 +237,10 @@
             20
         ],
         "Magic_Defense": [
-            2,
-            5
+            5,
+            7
         ],
-        "Weapon": 3,
+        "Weapon": 4,
         "Speed": [
             6,
             6
@@ -250,9 +250,27 @@
             80
         ],
         "Attacks": [
-            7
+            9
         ],
         "Drop_Table": [
+            {
+                "Name": "Segmented Fortress",
+                "Id": 4,
+                "Floor": "1",
+                "Type": "Weapon",
+                "Description": "The tail portion of a Stone Serpant. It's large and rough texture hints to just how old it is. Just how long ago it was apart of the spire.",
+                "Chance": 0.15,
+                "Physical": 13,
+                "Magical": 4,
+                "Ethereal": 2,
+                "Attacks": [
+                    8
+                ],
+                "Statuses": [
+        
+                ],
+                "Node_Slots": 5
+            }
         ]
     }
 ]

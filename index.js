@@ -21,7 +21,7 @@ var questObjects = [
 
 ]
 
-var botVersion = "0.3.5"
+var botVersion = "0.3.6"
 
 var playerTemplate = {
     Health: 100,
@@ -590,8 +590,9 @@ bot.on("message", async (message) => {
                                 let unlockedLocations = [
 
                                 ]
+                                // Code for going through locations Array in Firebase
                                 for (let i = 0; i < value.Locations[value.Floor - 1].length; i++) {
-                                    unlockedLocations.push(value.Locations[value.Floor - 1][i].Id)
+                                    unlockedLocations.push(value.Locations[value.Floor - 1][i])
                                 }
                                 let totalLocations = [
     
@@ -645,7 +646,7 @@ bot.on("message", async (message) => {
                                         }
                                     }
                                 }
-                                let enemy = enemies[Math.floor(Math.random() * floorEnemies.length)]
+                                let enemy = enemies[floorEnemies[Math.floor(Math.random() * floorEnemies.length)]]
                                     // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
                                     let enemyLevel = Math.floor(Math.random() * ((value.Level + 1) - (value.Level - 2))) + (value.Level - 2)
                                     if (enemyLevel < 1) {
@@ -1319,7 +1320,8 @@ database.once('value').then(function (snapshot) {
                     if (duelObjects[i].PlayerHp <= 0 && duelObjects[i].EnemyHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1343,7 +1345,8 @@ database.once('value').then(function (snapshot) {
                     else if (duelObjects[i].PlayerHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1406,10 +1409,15 @@ database.once('value').then(function (snapshot) {
                     finalMessage += "You have taken " + damageTaken + " damage and now have " + duelObjects[i].PlayerHp + "/" + duelObjects[i].PlayerMaxHp + " health remaining"
                     finalMessage += "```"
                     messageChannel.send(finalMessage)
+                    let update = {
+                        Health: value.Health -= damageTaken
+                    }
+                    database.update(update)
                     if (duelObjects[i].PlayerHp <= 0 && duelObjects[i].EnemyHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1429,7 +1437,8 @@ database.once('value').then(function (snapshot) {
                     else if (duelObjects[i].PlayerHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1522,7 +1531,8 @@ database.once('value').then(function (snapshot) {
                     if (duelObjects[i].PlayerHp <= 0 && duelObjects[i].EnemyHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1542,7 +1552,8 @@ database.once('value').then(function (snapshot) {
                     else if (duelObjects[i].PlayerHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1562,7 +1573,7 @@ database.once('value').then(function (snapshot) {
                     else if (duelObjects[i].EnemyHp <= 0) {
                         messageChannel.send("```css\n" + enemies[duelObjects[i].Enemy].Name + " has been killed```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1605,10 +1616,15 @@ database.once('value').then(function (snapshot) {
                     finalMessage += "You have taken " + damageTaken + " damage and now have " + duelObjects[i].PlayerHp + "/" + duelObjects[i].PlayerMaxHp + " health remaining"
                     finalMessage += "```"
                     messageChannel.send(finalMessage)
+                    let update = {
+                        Health: value.Health -= damageTaken
+                    }
+                    database.update(update)
                     if (duelObjects[i].PlayerHp <= 0 && duelObjects[i].EnemyHp <= 0) {
                         message.channel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {
@@ -1628,7 +1644,8 @@ database.once('value').then(function (snapshot) {
                     else if (duelObjects[i].PlayerHp <= 0) {
                         messageChannel.send("```css\nYou have been terminated\n```")
                         let update = {
-                            InDuel: false
+                            InDuel: false,
+                            Health: 0
                         }
                         database.update(update)
                         for (let i = 0; i < duelObjects.length; i++) {

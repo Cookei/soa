@@ -71,5 +71,23 @@
 
         ],
         "Node_Slots": 2
+    },
+    {
+        "Name": "Segmented Fortress",
+        "Id": 4,
+        "Floor": "1",
+        "Type": "Weapon",
+        "Description": "The tail portion of a Stone Serpant. It's large and rough texture hints to just how old it is. Just how long ago it was apart of the spire.",
+        "Chance": 0.15,
+        "Physical": 13,
+        "Magical": 4,
+        "Ethereal": 2,
+        "Attacks": [
+            8
+        ],
+        "Statuses": [
+
+        ],
+        "Node_Slots": 5
     }
 ]

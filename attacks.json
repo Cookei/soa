@@ -78,5 +78,25 @@
         "Physical_Ratio": 0.4,
         "Magical_Ratio": 3,
         "Ethereal": true
+    },
+    {
+        "Name": "Constriction",
+        "Id": 8,
+        "Type": "Weapon",
+        "Description": "It wraps around you target. Crushing their bones.",
+        "Cost": 3,
+        "Physical_Ratio": 1.35,
+        "Magical_Ratio": 0,
+        "Ethereal": true
+    },
+    {
+        "Name": "Ensnare",
+        "Id": 8,
+        "Type": "Weapon",
+        "Description": "The snake wraps its body around you. Crushing you",
+        "Cost": 3,
+        "Physical_Ratio": 2,
+        "Magical_Ratio": 0.75,
+        "Ethereal": true
     }
 ]
