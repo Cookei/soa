@@ -42,7 +42,7 @@
                 "Count": 1,
                 "Type": "Material",
                 "Description": "A piece of corrupted flesh that has dropped from the corrupted. It has little use. Dark purple tendrils scorch the skin, wrapping around it like snakes devouring its prey",
-                "Chance": 1,
+                "Chance": 0.25,
                 "Physical_Amp": 0,
                 "Magical_Amp": 3,
                 "Ethereal_Amp": 2,
@@ -57,7 +57,7 @@
                 "Floor": 1,
                 "Type": "Weapon",
                 "Description": "A tree ripped from the Sylven plains. It has seen much use, perhaps banging against other foes. Termites bite and gnaw at the tree trunk making it quite fragile.",
-                "Chance": 1,
+                "Chance": 0.12,
                 "Physical": 12,
                 "Magical": 3,
                 "Ethereal": 0,
@@ -122,6 +122,25 @@
                 "Status": [
         
                 ]
+            },
+            {
+                "Name": "Flesh Rending Jaws",
+                "Id": 2,
+                "Floor": "1 - 2",
+                "Type": "Weapon",
+                "Description": "The fangs of the Jawwarm. It is strong enough to tear through flesh, bits of corpse litter it's mouth from the previous prey it has hunted.",
+                "Chance": 0.2,
+                "Physical": 15,
+                "Magical": 0,
+                "Ethereal": 3,
+                "Attacks": [
+                    3,
+                    4
+                ],
+                "Statuses": [
+        
+                ],
+                "Node_Slots": 2
             }
         ]
     },
@@ -270,7 +289,61 @@
         
                 ],
                 "Node_Slots": 5
+            },
+            {
+                "Name": "Shattered Stones",
+                "Id": 3,
+                "Floor": 1,
+                "Count": 1,
+                "Type": "Material",
+                "Description": "Fractured parts of a Stone Serpant. There's nothing special about it. In fact, it looks like the same rocks you find around you... right?",
+                "Chance": 0.23,
+                "Physical_Amp": 4,
+                "Magical_Amp": 1,
+                "Ethereal_Amp": -2,
+                "Nodes": 1,
+                "Status": [
+        
+                ]
             }
+        ]
+    },
+    {
+        "Name": "Fyerjon",
+        "Id": 5,
+        "Description": "A flying amalgamation that horrifyingly glides through the bottom layers of the spire. It seems almost ancient and its name is of a language that was lost to history",
+        "Level": 1,
+        "Special": "False",
+        "Health": [
+            12,
+            12
+        ],
+        "Energy": 2,
+        "Floor": [
+            1,
+            1
+        ],
+        "Armor_Class": [
+            6,
+            8
+        ],
+        "Magic_Defense": [
+            7,
+            9
+        ],
+        "Weapon": 3,
+        "Speed": [
+            15,
+            23
+        ],
+        "Perception": [
+            60,
+            80
+        ],
+        "Attacks": [
+            7
+        ],
+        "Drop_Table": [
         ]
     }
 ]

@@ -46,6 +46,22 @@
         "Status": [
 
         ]
+    },
+    {
+        "Name": "Shattered Stones",
+        "Id": 3,
+        "Floor": 1,
+        "Count": 1,
+        "Type": "Material",
+        "Description": "Fractured parts of a Stone Serpant. There's nothing special about it. In fact, it looks like the same rocks you find around you... right?",
+        "Chance": 0.23,
+        "Physical_Amp": 4,
+        "Magical_Amp": 1,
+        "Ethereal_Amp": -2,
+        "Nodes": 1,
+        "Status": [
+
+        ]
     }
     
 ]

@@ -639,12 +639,15 @@ bot.on("message", async (message) => {
                                 let floorEnemies = [
 
                                 ]
-                                for (let i = 0; i < enemies.length; i++) {
-                                    if (enemies[i].Floor[0] <= value.Floor && enemies[i].Floor[1] >= value.Floor) {
-                                        if (enemies[i].Special == "False") {
-                                            floorEnemies.push(i)
-                                        }
-                                    }
+                                // for (let i = 0; i < enemies.length; i++) {
+                                //     if (enemies[i].Floor[0] <= value.Floor && enemies[i].Floor[1] >= value.Floor) {
+                                //         if (enemies[i].Special == "False") {
+                                //             floorEnemies.push(i)
+                                //         }
+                                //     }
+                                // }
+                                for (let i = 0; i < floors[value.Floor - 1].EnemyArray.length; i++) {
+                                    floorEnemies.push(floors[value.Floor - 1].EnemyArray[i])
                                 }
                                 let enemy = enemies[floorEnemies[Math.floor(Math.random() * floorEnemies.length)]]
                                     // let enemyLevel = Math.round(Math.random(value.Level - 2), value.Level + 2)
@@ -1017,7 +1020,7 @@ bot.on("message", async (message) => {
         })
     }
     else if (cmd == `${prefix}give`) {
-        drops(enemies[0].Drop_Table, message.author.id, message.channel)
+        drops(enemies[0].Drop_Table, message.author.id)
     }
     else if (cmd == `${prefix}quest`) {
         initQuest(1, message.author.id, message.channel, "Start")
@@ -1059,12 +1062,6 @@ bot.on("message", async (message) => {
             }
         })
     }
-    else if (cmd == `${prefix}push`) {
-        let database = firebase.database().ref("Players/" + message.author.id + "/Locations")
-        database.once('value').then(function(snapshot) {
-            database.update([locations[0][0]])
-        })
-    }
 
 })
 
@@ -1104,7 +1101,7 @@ function profileFix(playerId, messageUser) {
     })
 }
 
-function drops(enemyDrop, playerId, messageChannel) {
+function drops(enemyDrop, playerId) {
         let dropArray = [
 
         ]
@@ -1113,19 +1110,20 @@ function drops(enemyDrop, playerId, messageChannel) {
             let r = Math.random()
             if (r < enemyDrop[i].Chance) {
                 dropArray.push(enemyDrop[i])
-                finalMessage += "You have aqquired " + enemyDrop[i].Name + " -- ID: " + (enemyDrop[i].Id + 1) + " -- " + enemyDrop[i].Type + "\n"
+                finalMessage += "You have acquired " + enemyDrop[i].Name + " -- ID: " + (enemyDrop[i].Id + 1) + " -- " + enemyDrop[i].Type + "\n"
             }
         }
+        console.log(dropArray)
         invPush(playerId, dropArray)
         finalMessage += "```"
         if (dropArray.length == 0) {
             finalMessage = "```\n"
             finalMessage += "You have no aqquired anything\n"
             finalMessage += "```"
-            messageChannel.send(finalMessage)
+            return finalMessage
         }
         else {
-            messageChannel.send(finalMessage)
+            return finalMessage
         }
 }
 
@@ -1191,7 +1189,7 @@ function invPush(playerId, materialArray) {
                         if ((materialArray[i].Type && materialArray[i].Name) == (inv[j].Type && inv[j].Name)) {
                             inv[j].Count ++
                         }
-                        else if (j == inv.length) {
+                        else if (j == inv.length - 1) {
                             canAdd = true
                         }
                     }
@@ -1369,6 +1367,8 @@ database.once('value').then(function (snapshot) {
                             InDuel: false
                         }
                         database.update(update)
+                        messageChannel.send(drops(duelObjects[i].EnemyDrops, message.author.id))
+                        
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
                                 duelObjects.splice(i)
@@ -1461,6 +1461,7 @@ database.once('value').then(function (snapshot) {
                             InDuel: false
                         }
                         database.update(update)
+                        messageChannel.send(drops(duelObjects[i].EnemyDrops, message.author.id))
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
                                 duelObjects.splice(i)
@@ -1576,6 +1577,7 @@ database.once('value').then(function (snapshot) {
                             InDuel: false,
                         }
                         database.update(update)
+                        messageChannel.send(drops(duelObjects[i].EnemyDrops, message.author.id))
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
                                 duelObjects.splice(i)
@@ -1668,6 +1670,7 @@ database.once('value').then(function (snapshot) {
                             InDuel: false
                         }
                         database.update(update)
+                        messageChannel.send(drops(duelObjects[i].EnemyDrops, message.author.id))
                         for (let i = 0; i < duelObjects.length; i++) {
                             if (duelObjects[i].PlayerId == message.author.id) {
                                 duelObjects.splice(i)
@@ -2222,7 +2225,8 @@ function initDuel(enemy, playerId, enemyLevel, callback) {
             EnemyWeapon: weapons[targetEnemy.Weapon],
             Turn: "Player",
             Enemy: targetEnemy.Id,
-            EnemyLevel: enemyLevel
+            EnemyLevel: enemyLevel,
+            EnemyDrops: targetEnemy.Drop_Table
             }
         )
         finalMessage += "\n"
