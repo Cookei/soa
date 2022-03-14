@@ -57,12 +57,12 @@ var playerTemplate = {
 }
 
 var config = {
-    apiKey: "AIzaSyBIkqcsvFQJjvHVzwA-y9_WlImEgPw9ftE",
-    authDomain: "spire-of-ascension.firebaseapp.com",
-    databaseURL: "https://spire-of-ascension.firebaseio.com",
-    projectId: "spire-of-ascension",
-    storageBucket: "spire-of-ascension.appspot.com",
-    messagingSenderId: "655797975154"
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: ""
 }
 firebase.initializeApp(config)
 
